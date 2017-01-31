@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_explore"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Explore" />
+        <item
+            android:id="@+id/nav_registrations"
+            android:icon="@drawable/ic_content_paste_black_24dp"
+            android:title="My Registations" />
+        <item
+            android:id="@+id/nav_hospitality"
+            android:icon="@drawable/ic_hotel_black_24dp"
+            android:title="Hospitality" />
+        <item
+            android:id="@+id/nav_sponsors"
+            android:icon="@drawable/ic_local_offer_black_24dp"
+            android:title="Sponsors" />
+    </group>
+
+
+    <item
+        android:id="@+id/nav_team"
+        android:icon="@drawable/ic_group_black_24dp"
+        android:title="Team">
+        <menu>
+            <item
+                android:id="@+id/nav_srijan"
+                android:title="Srijan" />
+            <item
+                android:id="@+id/nav_journal"
+                android:title="JU Journal" />
+
+            <item
+                android:id="@+id/nav_ecell"
+                android:title="E-Cell" />
+
+        </menu>
+
+    </item>
+
+    <item android:title="Other">
+        <menu>
+
+
+            <item
+                android:id="@+id/nav_contact_us"
+                android:icon="@drawable/ic_forum_black_24dp"
+                android:title="Contact Us" />
+
+            <item
+                android:id="@+id/nav_about_us"
+                android:icon="@drawable/ic_info_black_24dp"
+                android:title="About Us" />
+
+
+            <item
+                android:id="@+id/nav_log_out"
+                android:icon="@drawable/ic_power_settings_new_black_24dp"
+                android:title="Log Out" />
+        </menu>
+
+
+    </item>
+
+
+</menu>
