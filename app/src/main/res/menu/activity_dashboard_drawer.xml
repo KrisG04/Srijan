@@ -9,8 +9,8 @@
             android:title="Explore" />
         <item
             android:id="@+id/nav_registrations"
-            android:icon="@drawable/ic_content_paste_black_24dp"
-            android:title="My Registations" />
+            android:icon="@drawable/ic_weekend_black_24dp"
+            android:title="My Registrations" />
         <item
             android:id="@+id/nav_hospitality"
             android:icon="@drawable/ic_hotel_black_24dp"
