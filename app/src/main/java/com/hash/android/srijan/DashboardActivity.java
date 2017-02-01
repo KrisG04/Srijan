@@ -1,6 +1,7 @@
 package com.hash.android.srijan;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -38,7 +39,6 @@ public class DashboardActivity extends AppCompatActivity
     static ArrayList<Integer> eventArrayListIcon;
     private static String urlProfileImg;
     private FirebaseAuth mAuth;
-    private Handler mHandler;
     private View navHeader;
 
     @Override
@@ -114,9 +114,11 @@ public class DashboardActivity extends AppCompatActivity
 
         addEvent("Robotech", R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
         addEvent("Code Me", R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
+        addEvent("Gaming", R.drawable.gamingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.gaminglogo);
         addEvent("Manage Mania", R.drawable.manageeimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.managelogo);
         addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
         addEvent("Workshop", R.drawable.workshopimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.workshoplogo);
+        addEvent("Official Merchandise", R.drawable.merch2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.merchlogo);
 
     }
 
@@ -170,7 +172,7 @@ public class DashboardActivity extends AppCompatActivity
             Toast.makeText(this, "Explore", Toast.LENGTH_SHORT).show();
             // Handle the camera action
         } else if (id == R.id.nav_registrations) {
-            Toast.makeText(this, "Explore", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "My registrations", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_hospitality) {
             Toast.makeText(this, "Hospitality", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_sponsors) {
@@ -188,12 +190,27 @@ public class DashboardActivity extends AppCompatActivity
             Toast.makeText(this, "About us", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_contact_us) {
             Toast.makeText(this, "Contact us", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_navigation) {
+            navigateTo(22.560808, 88.413224);
         }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+
+        //22.560808, 88.413224
+    }
+
+    private void navigateTo(double lat, double lng) {
+
+        String format = "geo:0,0?q=" + lat + "," + lng + "(Jadavpur University SL Campus)";
+        Uri uri = Uri.parse(format);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
     }
 
 

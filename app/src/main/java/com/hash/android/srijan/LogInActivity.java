@@ -1,5 +1,6 @@
 package com.hash.android.srijan;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,11 +41,14 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private CallbackManager callbackManager;
 
+    private ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_in_activity);
 
+        pd = new ProgressDialog(LogInActivity.this);
+        pd.setMessage("Signing you in...");
 
 //
 //        ActionBar actionBar = getSupportActionBar();
@@ -149,7 +153,9 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.googleSignInImageView:
+                pd.show();
                 signIn();
+                pd.hide();
                 break;
 //            case R.id.facebookLogInImageView:
 //                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));

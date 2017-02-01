@@ -9,11 +9,11 @@
             android:title="Explore" />
         <item
             android:id="@+id/nav_registrations"
-            android:icon="@drawable/ic_weekend_black_24dp"
+            android:icon="@drawable/ic_content_paste_black_24dp"
             android:title="My Registrations" />
         <item
             android:id="@+id/nav_hospitality"
-            android:icon="@drawable/ic_hotel_black_24dp"
+            android:icon="@drawable/ic_weekend_black_24dp"
             android:title="Hospitality" />
         <item
             android:id="@+id/nav_sponsors"
@@ -29,13 +29,16 @@
         <menu>
             <item
                 android:id="@+id/nav_srijan"
+                android:icon="@drawable/ic_developer_board_black_24dp"
                 android:title="Srijan" />
             <item
                 android:id="@+id/nav_journal"
-                android:title="JU Journal" />
+                android:icon="@drawable/ic_import_contacts_black_24dp"
+                android:title="The JU Journal" />
 
             <item
                 android:id="@+id/nav_ecell"
+                android:icon="@drawable/ic_wb_incandescent_black_24dp"
                 android:title="E-Cell" />
 
         </menu>
@@ -45,6 +48,10 @@
     <item android:title="Other">
         <menu>
 
+            <item
+                android:id="@+id/nav_navigation"
+                android:icon="@drawable/ic_directions_black_24dp"
+                android:title="Navigate" />
 
             <item
                 android:id="@+id/nav_contact_us"
