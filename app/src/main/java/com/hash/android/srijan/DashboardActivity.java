@@ -10,6 +10,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,16 +26,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hash.android.srijan.functions.CircleTransform;
 
+import java.util.ArrayList;
+
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
+    static ArrayList<Integer> eventArrayListImage;
+    static ArrayList<String> eventArrayListTextContent;
+    static ArrayList<String> eventArrayListTextHeading;
+    static ArrayList<Integer> eventArrayListIcon;
     private static String urlProfileImg;
     private FirebaseAuth mAuth;
     private Handler mHandler;
-
     private View navHeader;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +96,35 @@ public class DashboardActivity extends AppCompatActivity
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(profileImage);
 
+
+        eventArrayListTextHeading = new ArrayList<String>();
+        eventArrayListImage = new ArrayList<Integer>();
+        eventArrayListIcon = new ArrayList<Integer>();
+        eventArrayListTextContent = new ArrayList<String>();
+
+        updateContent();
+        RecyclerView exploreRecyclerView = (RecyclerView) findViewById(R.id.exploreRecyclerView);
+        exploreRecyclerView.setHasFixedSize(true);
+        exploreRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        exploreRecyclerView.setAdapter(new EventRecyclerAdapter());
+
+    }
+
+    private void updateContent() {
+
+        addEvent("Robotech", R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
+        addEvent("Code Me", R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
+        addEvent("Manage Mania", R.drawable.manageeimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.managelogo);
+        addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
+        addEvent("Workshop", R.drawable.workshopimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.workshoplogo);
+
+    }
+
+    private void addEvent(String robotech, int codingimage, String s, int robotics) {
+        eventArrayListTextHeading.add(robotech);
+        eventArrayListImage.add(codingimage);
+        eventArrayListTextContent.add(s);
+        eventArrayListIcon.add(robotics);
     }
 
 
