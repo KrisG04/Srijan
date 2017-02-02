@@ -1,25 +1,28 @@
 package com.hash.android.srijan;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,13 +39,14 @@ import java.util.concurrent.ExecutionException;
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
+    public static final String PREFS_NAME = "MyPrefsFileNew";
     static ArrayList<Integer> eventArrayListImage;
     static ArrayList<String> eventArrayListTextContent;
     static ArrayList<String> eventArrayListTextHeading;
     static ArrayList<Integer> eventArrayListIcon;
     static int pos;
     static User authUser;
+    static String m_Text;
     private static String urlProfileImg;
     private FirebaseAuth mAuth;
     private View navHeader;
@@ -54,15 +58,47 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean dialogShown = settings.getBoolean("dialogShown2", false);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        //TODO: Remove this dailog box and embed it into the login screen or make a slider activity for it
+        if (!dialogShown) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Contact No.");
+
+            // Set up the input
+            final EditText input = new EditText(this);
+            input.setPadding(4, 0, 4, 0);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_PHONE);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    m_Text = input.getText().toString();
+                }
+            });
+            builder.setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            if (m_Text != null)
+                Log.d("sharedprefs:", m_Text);
+            else
+                Log.d("sharedprefs:", "Fail");
+            builder.show();
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean("dialogShown", true);
+            editor.putString("phone", m_Text);
+            editor.commit();
+        }
+
 
 
 
@@ -92,10 +128,13 @@ public class DashboardActivity extends AppCompatActivity
         emailTextView.setText(user.getEmail());
         header.setImageResource(R.drawable.cover);
 
+        String phoneNumber = settings.getString("phone", "null");
+        Log.d("phone", phoneNumber);
         authUser = new User();
         authUser.setName(user.getDisplayName());
         authUser.setEmail(user.getEmail());
         authUser.setId(user.getUid());
+        authUser.setPhoneNumber(phoneNumber);
         authUser.saveUser();
 
 
