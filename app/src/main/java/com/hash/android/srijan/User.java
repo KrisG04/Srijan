@@ -16,6 +16,7 @@ public class User {
     private String phoneNumber;
     private String email;
 
+
     public String getId() {
         return id;
     }
@@ -54,7 +55,7 @@ public class User {
             //user signed in
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("users");
-            myRef.child(getId()).setValue(this);
+            myRef.child(getName()).setValue(this);
 
         } else
             Log.d("saveUser:", "User not authenticated");

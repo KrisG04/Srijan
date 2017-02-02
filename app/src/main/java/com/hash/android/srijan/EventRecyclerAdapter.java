@@ -85,10 +85,10 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
 
         public ViewHolder(View inflate) {
             super(inflate);
-            heading = (TextView) inflate.findViewById(R.id.eventTextView);
+            heading = (TextView) inflate.findViewById(R.id.eventDetailTextView);
             content = (TextView) inflate.findViewById(R.id.contentEventTextView);
             image = (ImageView) inflate.findViewById(R.id.eventImageView);
-            icon = (ImageView) inflate.findViewById(R.id.eventImageViewIcon);
+            icon = (ImageView) inflate.findViewById(R.id.eventDetailImageViewIcon);
         }
 
     }

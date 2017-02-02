@@ -216,6 +216,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void firebaseAuthWithGoogle(final GoogleSignInAccount account) {
         final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        pd.show();
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -227,6 +228,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 //                            Log.d("URI",account.getPhotoUrl().toString());
                         } else
                             Log.d("Task", "Failed");
+                        pd.hide();
                     }
                 });
     }
@@ -244,6 +246,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        pd.show();
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -258,7 +261,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                             Toast.makeText(LogInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-
+                        pd.hide();
                         // ...
                     }
                 });

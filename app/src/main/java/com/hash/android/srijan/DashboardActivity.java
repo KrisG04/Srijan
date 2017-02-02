@@ -1,9 +1,9 @@
 package com.hash.android.srijan;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -14,8 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.hash.android.srijan.functions.CircleTransform;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +41,8 @@ public class DashboardActivity extends AppCompatActivity
     static ArrayList<String> eventArrayListTextContent;
     static ArrayList<String> eventArrayListTextHeading;
     static ArrayList<Integer> eventArrayListIcon;
+    static int pos;
+    static User authUser;
     private static String urlProfileImg;
     private FirebaseAuth mAuth;
     private View navHeader;
@@ -48,7 +54,6 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mHandler = new Handler();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +63,7 @@ public class DashboardActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -84,10 +90,14 @@ public class DashboardActivity extends AppCompatActivity
 
         txtName.setText(user.getDisplayName());
         emailTextView.setText(user.getEmail());
-        Glide.with(this).load(urlNavHeaderBg)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(header);
+        header.setImageResource(R.drawable.cover);
+
+        authUser = new User();
+        authUser.setName(user.getDisplayName());
+        authUser.setEmail(user.getEmail());
+        authUser.setId(user.getUid());
+        authUser.saveUser();
+
 
         Glide.with(this).load(urlProfileImg)
                 .crossFade()
@@ -108,13 +118,29 @@ public class DashboardActivity extends AppCompatActivity
         exploreRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         exploreRecyclerView.setAdapter(new EventRecyclerAdapter());
 
+        exploreRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, exploreRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) throws ExecutionException, InterruptedException {
+                Log.d("postion", String.valueOf(position));
+                Intent i = new Intent(DashboardActivity.this, EventsActivity.class);
+//                i.putExtra("position", position);
+                pos = position;
+                startActivity(i);
+
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
     }
 
     private void updateContent() {
 
-        addEvent("Robotech", R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
-        addEvent("Code Me", R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
-        addEvent("Gaming", R.drawable.gamingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.gaminglogo);
+        addEvent(getString(R.string.robticsEventName), R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
+        addEvent(getString(R.string.codeMe), R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
+        addEvent(getString(R.string.gaming), R.drawable.gamingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.gaminglogo);
         addEvent("Manage Mania", R.drawable.manageeimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.managelogo);
         addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
         addEvent("Workshop", R.drawable.workshopimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.workshoplogo);
@@ -211,6 +237,59 @@ public class DashboardActivity extends AppCompatActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
+    }
+
+    public static class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+        GestureDetector mGestureDetector;
+        private OnItemClickListener mListener;
+
+        public RecyclerItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
+            mListener = listener;
+            mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && mListener != null) {
+                        mListener.onLongItemClick(child, recyclerView.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+            View childView = view.findChildViewUnder(e.getX(), e.getY());
+            if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
+                try {
+                    mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
+                } catch (ExecutionException e1) {
+                    e1.printStackTrace();
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+
+        public interface OnItemClickListener {
+            void onItemClick(View view, int position) throws ExecutionException, InterruptedException;
+
+            void onLongItemClick(View view, int position);
+        }
     }
 
 

@@ -28,6 +28,24 @@
             android:name=".DashboardActivity"
             android:label="Explore"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventsActivity"
+            android:parentActivityName="com.hash.android.srijan.DashboardActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.hash.android.srijan.DashboardActivity" />
+            />
+        </activity>
+
+        <activity
+            android:name=".DetailsActivity"
+            android:label="@string/title_activity_details"
+            android:parentActivityName=".EventsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.hash.android.srijan.EventsActivity" />
+        </activity>
     </application>
 
 </manifest> <!-- android:theme="@style/AppTheme.NoActionBar" -->

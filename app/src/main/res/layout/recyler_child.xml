@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    android:elevation="16dp">
+    android:clickable="true"
+    android:elevation="16dp"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,13 +37,13 @@
                     android:id="@+id/contentEventTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/eventTextView"
-                    android:layout_below="@+id/eventTextView"
+                    android:layout_alignStart="@+id/eventDetailTextView"
+                    android:layout_below="@+id/eventDetailTextView"
                     android:text="textView"
                     android:textSize="12sp" />
 
                 <ImageView
-                    android:id="@+id/eventImageViewIcon"
+                    android:id="@+id/eventDetailImageViewIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -49,12 +52,12 @@
                     app:srcCompat="@mipmap/ic_launcher" />
 
                 <TextView
-                    android:id="@+id/eventTextView"
+                    android:id="@+id/eventDetailTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="26dp"
-                    android:layout_toEndOf="@+id/eventImageViewIcon"
+                    android:layout_toEndOf="@+id/eventDetailImageViewIcon"
                     android:text="textView"
                     android:textColor="@color/colorAccent"
                     android:textSize="18sp" />
