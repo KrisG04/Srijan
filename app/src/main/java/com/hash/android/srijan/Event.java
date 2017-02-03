@@ -3,12 +3,13 @@ package com.hash.android.srijan;
 /**
  * Created by Spandita Ghosh on 2/2/2017.
  */
-class Event {
+public class Event {
     private String category;
     private String head;
     private String content;
     private int image;
     private int icon;
+
 
     public Event(String category, String head, String content, int image, int icon) {
         this.category = category;
@@ -24,6 +25,10 @@ class Event {
 
     public String getCategory() {
         return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getHead() {

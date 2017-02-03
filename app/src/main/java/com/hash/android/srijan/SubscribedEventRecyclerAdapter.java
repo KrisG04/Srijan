@@ -10,14 +10,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import static com.hash.android.srijan.fragment.SubscriptionFragment.arrayList;
+
+
 /**
- * Created by Spandita Ghosh on 2/1/2017.
+ * Created by Spandita Ghosh on 2/3/2017.
  */
-
-
-public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdapter.ViewHolder> {
+public class SubscribedEventRecyclerAdapter extends RecyclerView.Adapter<SubscribedEventRecyclerAdapter.ViewHolder> {
 
     private int lastPosition = -1;
+
     /**
      * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
      * an item.
@@ -38,10 +40,9 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(ViewHolder, int)
      */
-
     @Override
-    public EventRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recyler_child, parent, false));
+    public SubscribedEventRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new SubscribedEventRecyclerAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recyler_child_event, parent, false));
     }
 
     /**
@@ -65,33 +66,15 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(EventRecyclerAdapter.ViewHolder holder, int position) {
-
-        holder.heading.setText(DashboardActivity.eventArrayListTextHeading.get(position));
-        holder.content.setText(DashboardActivity.eventArrayListTextContent.get(position));
-        holder.image.setImageResource(DashboardActivity.eventArrayListImage.get(position));
-        holder.icon.setImageResource(DashboardActivity.eventArrayListIcon.get(position));
-
-        Animation animation = AnimationUtils.loadAnimation(holder.heading.getContext(),
+    public void onBindViewHolder(SubscribedEventRecyclerAdapter.ViewHolder holder, int position) {
+        holder.eventDetailHeading.setText(arrayList.get(position).getHead());
+        holder.eventDetailDescription.setText(arrayList.get(position).getContent());
+        holder.eventDetailImageView.setImageResource(arrayList.get(position).getImage());
+        holder.eventDetailIcon.setImageResource(arrayList.get(position).getIcon());
+        Animation animation = AnimationUtils.loadAnimation(holder.eventDetailHeading.getContext(),
                 R.anim.up_from_bottom);
         holder.itemView.startAnimation(animation);
         lastPosition = position;
-
-    }
-
-    /**
-     * Called when a view created by this adapter has been detached from its window.
-     * <p>
-     * <p>Becoming detached from the window is not necessarily a permanent condition;
-     * the consumer of an Adapter's views may choose to cache views offscreen while they
-     * are not visible, attaching and detaching them as appropriate.</p>
-     *
-     * @param holder Holder of the view being detached
-     */
-    @Override
-    public void onViewDetachedFromWindow(ViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        holder.itemView.clearAnimation();
     }
 
     /**
@@ -101,22 +84,20 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
      */
     @Override
     public int getItemCount() {
-        return DashboardActivity.eventArrayListTextContent.size();
+        return arrayList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView heading;
-        TextView content;
-        ImageView image;
-        ImageView icon;
+        ImageView eventDetailImageView, eventDetailIcon;
+        TextView eventDetailHeading, eventDetailDescription;
 
-        public ViewHolder(View inflate) {
-            super(inflate);
-            heading = (TextView) inflate.findViewById(R.id.eventDetailTextView);
-            content = (TextView) inflate.findViewById(R.id.contentEventTextView);
-            image = (ImageView) inflate.findViewById(R.id.eventImageView);
-            icon = (ImageView) inflate.findViewById(R.id.eventDetailImageViewIcon);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            eventDetailImageView = (ImageView) itemView.findViewById(R.id.eventDetailImageView);
+            eventDetailIcon = (ImageView) itemView.findViewById(R.id.eventDetailImageViewIcon);
+            eventDetailHeading = (TextView) itemView.findViewById(R.id.eventDetailTextView);
+            eventDetailDescription = (TextView) itemView.findViewById(R.id.contentDetailEventTextView);
+
         }
-
     }
 }

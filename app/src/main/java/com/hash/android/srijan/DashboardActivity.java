@@ -39,6 +39,8 @@ import com.hash.android.srijan.functions.CircleTransform;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static com.hash.android.srijan.EventsActivity.events;
+
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -61,15 +63,15 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        updateDetails();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.frame_container, new DashboardFragment())
                 .commit();
 
 
-
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        boolean dialogShown = settings.getBoolean("dialogShownfinal", false);
+        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean dialogShown = settings.getBoolean("dialogShownFinal2", false);
 
         //TODO: Remove this dailog box and embed it into the login screen or make a slider activity for it.
         if (!dialogShown) {
@@ -88,11 +90,18 @@ public class DashboardActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     m_Text = input.getText().toString();
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean("dialogShownfinal1", true);
+                    editor.putString("phone", m_Text);
+                    editor.commit();
                 }
             });
             builder.setNegativeButton("Skip", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean("dialogShownFinal2", true);
+                    editor.commit();
                     dialog.cancel();
                 }
             });
@@ -102,10 +111,7 @@ public class DashboardActivity extends AppCompatActivity
             else
                 Log.d("sharedprefs:", "Fail");
             builder.show();
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("dialogShownfinal", true);
-            editor.putString("phone", m_Text);
-            editor.commit();
+
         }
 
 
@@ -218,7 +224,6 @@ public class DashboardActivity extends AppCompatActivity
         Fragment fragment = null;
         if (id == R.id.nav_explore) {
             fragment = new DashboardFragment();
-            // Handle the camera action
         } else if (id == R.id.nav_registrations) {
             fragment = new SubscriptionFragment();
         } else if (id == R.id.nav_hospitality) {
@@ -265,6 +270,27 @@ public class DashboardActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+
+    }
+
+    private void updateDetails() {
+
+//        Event event = new Event("Robotech","Stair Climbing Bot",getString(R.string.loremIpsum),R.drawable.codingimage,R.drawable.codemelogo);
+//        event.save();
+
+        events = new ArrayList<>();
+        events.clear();
+        events.add(new Event("Robotech", "Stair Climbing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics));
+        events.add(new Event("Robotech", "RoboSoccer", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics));
+        events.add(new Event("Robotech", "FastnFurious", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.robotics));
+        events.add(new Event("Robotech", "Line Follower Bot", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics));
+        events.add(new Event("Robotech", "Image Processing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics));
+
+        events.add(new Event("Gaming", "FIFA 11", getString(R.string.loremIpsum), R.drawable.fifaimage, R.drawable.gaminglogo));
+        events.add(new Event("Gaming", "Dota 2", getString(R.string.loremIpsum), R.drawable.dotaimage, R.drawable.gaminglogo));
+        events.add(new Event("Gaming", "NFS Most Wanted", getString(R.string.loremIpsum), R.drawable.nfsimage, R.drawable.gaminglogo));
+
+        events.add(new Event("Code Me", "Sherlock", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.codemelogo));
 
     }
 
@@ -320,6 +346,5 @@ public class DashboardActivity extends AppCompatActivity
             void onLongItemClick(View view, int position);
         }
     }
-
 
 }

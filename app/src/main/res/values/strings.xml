@@ -102,4 +102,5 @@
     <string name="codeMe">Code Me</string>
     <string name="gaming">Gaming</string>
     <string name="loremIpsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla placerat quam neque, a eleifend dolor vehicula at.</string>
+    <string name="finalSharedPrefs">finalab</string>
 </resources>
