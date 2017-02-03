@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -44,11 +43,11 @@ public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String PREFS_NAME = "MyPrefsFileNew";
-    static ArrayList<Integer> eventArrayListImage;
-    static ArrayList<String> eventArrayListTextContent;
-    static ArrayList<String> eventArrayListTextHeading;
-    static ArrayList<Integer> eventArrayListIcon;
-    static int pos;
+    public static ArrayList<Integer> eventArrayListImage;
+    public static ArrayList<String> eventArrayListTextContent;
+    public static ArrayList<String> eventArrayListTextHeading;
+    public static ArrayList<Integer> eventArrayListIcon;
+    public static int pos;
     static User authUser;
     static String m_Text;
     private static String urlProfileImg;
@@ -62,10 +61,12 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.frame_container, new DashboardFragment())
-//                .commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frame_container, new DashboardFragment())
+                .commit();
+
+
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         boolean dialogShown = settings.getBoolean("dialogShownfinal", false);
@@ -154,53 +155,26 @@ public class DashboardActivity extends AppCompatActivity
                 .into(profileImage);
 
 
-        eventArrayListTextHeading = new ArrayList<String>();
-        eventArrayListImage = new ArrayList<Integer>();
-        eventArrayListIcon = new ArrayList<Integer>();
-        eventArrayListTextContent = new ArrayList<String>();
-
-        updateContent();
-        RecyclerView exploreRecyclerView = (RecyclerView) findViewById(R.id.exploreRecyclerView);
-        exploreRecyclerView.setHasFixedSize(true);
-        exploreRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        exploreRecyclerView.setAdapter(new EventRecyclerAdapter());
-
-        exploreRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, exploreRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) throws ExecutionException, InterruptedException {
-                Log.d("postion", String.valueOf(position));
-                Intent i = new Intent(DashboardActivity.this, EventsActivity.class);
-//                i.putExtra("position", position);
-                pos = position;
-                startActivity(i);
-
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
     }
 
-    private void updateContent() {
-
-        addEvent(getString(R.string.robticsEventName), R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
-        addEvent(getString(R.string.codeMe), R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
-        addEvent(getString(R.string.gaming), R.drawable.gamingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.gaminglogo);
-        addEvent("Manage Mania", R.drawable.manageeimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.managelogo);
-        addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
-        addEvent("Workshop", R.drawable.workshopimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.workshoplogo);
-        addEvent("Official Merchandise", R.drawable.merch2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.merchlogo);
-
-    }
-
-    private void addEvent(String robotech, int codingimage, String s, int robotics) {
-        eventArrayListTextHeading.add(robotech);
-        eventArrayListImage.add(codingimage);
-        eventArrayListTextContent.add(s);
-        eventArrayListIcon.add(robotics);
-    }
+//    private void updateContent() {
+//
+//        addEvent(getString(R.string.robticsEventName), R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
+//        addEvent(getString(R.string.codeMe), R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
+//        addEvent(getString(R.string.gaming), R.drawable.gamingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.gaminglogo);
+//        addEvent("Manage Mania", R.drawable.manageeimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.managelogo);
+//        addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
+//        addEvent("Workshop", R.drawable.workshopimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.workshoplogo);
+//        addEvent("Official Merchandise", R.drawable.merch2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.merchlogo);
+//
+//    }
+//
+//    private void addEvent(String robotech, int codingimage, String s, int robotics) {
+//        eventArrayListTextHeading.add(robotech);
+//        eventArrayListImage.add(codingimage);
+//        eventArrayListTextContent.add(s);
+//        eventArrayListIcon.add(robotics);
+//    }
 
 
     @Override
