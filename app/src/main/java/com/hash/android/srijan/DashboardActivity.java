@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,6 +33,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hash.android.srijan.fragment.DashboardFragment;
+import com.hash.android.srijan.fragment.SubscriptionFragment;
 import com.hash.android.srijan.functions.CircleTransform;
 
 import java.util.ArrayList;
@@ -58,10 +62,15 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        boolean dialogShown = settings.getBoolean("dialogShown2", false);
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.frame_container, new DashboardFragment())
+//                .commit();
 
-        //TODO: Remove this dailog box and embed it into the login screen or make a slider activity for it
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean dialogShown = settings.getBoolean("dialogShownfinal", false);
+
+        //TODO: Remove this dailog box and embed it into the login screen or make a slider activity for it.
         if (!dialogShown) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -69,7 +78,6 @@ public class DashboardActivity extends AppCompatActivity
 
             // Set up the input
             final EditText input = new EditText(this);
-            input.setPadding(4, 0, 4, 0);
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setInputType(InputType.TYPE_CLASS_PHONE);
             builder.setView(input);
@@ -94,7 +102,7 @@ public class DashboardActivity extends AppCompatActivity
                 Log.d("sharedprefs:", "Fail");
             builder.show();
             SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("dialogShown", true);
+            editor.putBoolean("dialogShownfinal", true);
             editor.putString("phone", m_Text);
             editor.commit();
         }
@@ -233,11 +241,12 @@ public class DashboardActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        Fragment fragment = null;
         if (id == R.id.nav_explore) {
-            Toast.makeText(this, "Explore", Toast.LENGTH_SHORT).show();
+            fragment = new DashboardFragment();
             // Handle the camera action
         } else if (id == R.id.nav_registrations) {
-            Toast.makeText(this, "My registrations", Toast.LENGTH_SHORT).show();
+            fragment = new SubscriptionFragment();
         } else if (id == R.id.nav_hospitality) {
             Toast.makeText(this, "Hospitality", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_sponsors) {
@@ -259,6 +268,13 @@ public class DashboardActivity extends AppCompatActivity
             navigateTo(22.560808, 88.413224);
         }
 
+
+        if (fragment != null) {
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_container, fragment).commit();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
