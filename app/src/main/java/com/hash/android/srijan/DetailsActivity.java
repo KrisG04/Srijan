@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import static com.hash.android.srijan.DashboardActivity.PREFS_NAME;
 import static com.hash.android.srijan.DashboardActivity.authUser;
-import static com.hash.android.srijan.EventsActivity.finalEvent;
+import static com.hash.android.srijan.DashboardActivity.finalEvent;
 import static com.hash.android.srijan.EventsActivity.posEvent;
 
 public class DetailsActivity extends AppCompatActivity {
@@ -73,7 +73,7 @@ public class DetailsActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     pd.show();
-                                    mDatabase.child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).push().setValue(authUser)
+                                    mDatabase.child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).child(authUser.getId()).setValue(authUser)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -87,6 +87,7 @@ public class DetailsActivity extends AppCompatActivity {
                                                     pd.hide();
                                                 }
                                             });
+
                                 }
                             })
                             .setNegativeButton("Nope", new DialogInterface.OnClickListener() {

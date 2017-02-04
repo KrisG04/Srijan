@@ -50,7 +50,8 @@ public class DashboardActivity extends AppCompatActivity
     public static ArrayList<String> eventArrayListTextHeading;
     public static ArrayList<Integer> eventArrayListIcon;
     public static int pos;
-    static User authUser;
+    public static User authUser;
+    public static ArrayList<Event> finalEvent;
     static String m_Text;
     private static String urlProfileImg;
     private FirebaseAuth mAuth;
@@ -160,6 +161,7 @@ public class DashboardActivity extends AppCompatActivity
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(profileImage);
 
+        finalEvent = new ArrayList<>();
 
     }
 
