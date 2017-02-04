@@ -15,7 +15,16 @@ public class User {
     private String name;
     private String phoneNumber;
     private String email;
+    private String university;
 
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+
+        this.university = university;
+    }
 
     public String getId() {
         return id;

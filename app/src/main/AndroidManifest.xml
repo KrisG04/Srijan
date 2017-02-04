@@ -12,31 +12,25 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LogInActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
         <activity
             android:name=".DashboardActivity"
             android:label="Explore"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EventsActivity"
-            android:parentActivityName="com.hash.android.srijan.DashboardActivity">
+            android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hash.android.srijan.DashboardActivity" />
             />
         </activity>
-
         <activity
             android:name=".DetailsActivity"
             android:label="@string/title_activity_details"
@@ -46,6 +40,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hash.android.srijan.EventsActivity" />
         </activity>
+        <activity android:name=".SplashActivity"></activity>
     </application>
 
 </manifest> <!-- android:theme="@style/AppTheme.NoActionBar" -->

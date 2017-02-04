@@ -1,7 +1,6 @@
 package com.hash.android.srijan;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,18 +11,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,48 +67,7 @@ public class DashboardActivity extends AppCompatActivity
 
 
         final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        boolean dialogShown = settings.getBoolean("dialogShownFinal2", false);
-
-        //TODO: Remove this dailog box and embed it into the login screen or make a slider activity for it.
-        if (!dialogShown) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Contact No.");
-
-            // Set up the input
-            final EditText input = new EditText(this);
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-            input.setInputType(InputType.TYPE_CLASS_PHONE);
-            builder.setView(input);
-
-            // Set up the buttons
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    m_Text = input.getText().toString();
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putBoolean("dialogShownfinal1", true);
-                    editor.putString("phone", m_Text);
-                    editor.commit();
-                }
-            });
-            builder.setNegativeButton("Skip", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putBoolean("dialogShownFinal2", true);
-                    editor.commit();
-                    dialog.cancel();
-                }
-            });
-
-            if (m_Text != null)
-                Log.d("sharedprefs:", m_Text);
-            else
-                Log.d("sharedprefs:", "Fail");
-            builder.show();
-
-        }
+//        boolean dialogShown = settings.getBoolean("dialogShownFinal2", false);
 
 
 
@@ -144,14 +98,7 @@ public class DashboardActivity extends AppCompatActivity
         emailTextView.setText(user.getEmail());
         header.setImageResource(R.drawable.cover);
 
-        String phoneNumber = settings.getString("phone", "null");
-        Log.d("phone", phoneNumber);
-        authUser = new User();
-        authUser.setName(user.getDisplayName());
-        authUser.setEmail(user.getEmail());
-        authUser.setId(user.getUid());
-        authUser.setPhoneNumber(phoneNumber);
-        authUser.saveUser();
+
 
 
         Glide.with(this).load(urlProfileImg)
@@ -282,17 +229,18 @@ public class DashboardActivity extends AppCompatActivity
 
         events = new ArrayList<>();
         events.clear();
-        events.add(new Event("Robotech", "Stair Climbing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics));
-        events.add(new Event("Robotech", "RoboSoccer", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics));
-        events.add(new Event("Robotech", "FastnFurious", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.robotics));
-        events.add(new Event("Robotech", "Line Follower Bot", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics));
-        events.add(new Event("Robotech", "Image Processing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics));
+        events.add(new Event("Robotech", "Stair Climbing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "RoboSoccer", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "FastnFurious", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "Line Follower Bot", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "Image Processing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
 
-        events.add(new Event("Gaming", "FIFA 11", getString(R.string.loremIpsum), R.drawable.fifaimage, R.drawable.gaminglogo));
-        events.add(new Event("Gaming", "Dota 2", getString(R.string.loremIpsum), R.drawable.dotaimage, R.drawable.gaminglogo));
-        events.add(new Event("Gaming", "NFS Most Wanted", getString(R.string.loremIpsum), R.drawable.nfsimage, R.drawable.gaminglogo));
+        events.add(new Event("Gaming", "FIFA 11", getString(R.string.loremIpsum), R.drawable.fifaimage, R.drawable.gaminglogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Gaming", "Dota 2", getString(R.string.loremIpsum), R.drawable.dotaimage, R.drawable.gaminglogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Gaming", "NFS Most Wanted", getString(R.string.loremIpsum), R.drawable.nfsimage, R.drawable.gaminglogo, getString(R.string.stairclimbingBotDesc)));
 
-        events.add(new Event("Code Me", "Sherlock", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.codemelogo));
+        events.add(new Event("Code Me", "Sherlock", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.codemelogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Code Me", "Debugging", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.codemelogo, getString(R.string.stairclimbingBotDesc)));
 
     }
 

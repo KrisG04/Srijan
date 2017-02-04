@@ -97,8 +97,10 @@ public class DetailsActivity extends AppCompatActivity {
                                 }
                             })
                             .show();
-                } else
+                } else {
                     Toast.makeText(DetailsActivity.this, "Already registered for the event!", Toast.LENGTH_SHORT).show();
+                }
+
             }
 //                else
 //                    Toast.makeText(DetailsActivity.this, "Already subscribed", Toast.LENGTH_SHORT).show();
