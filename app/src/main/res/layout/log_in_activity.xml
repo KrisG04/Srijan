@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/imageView2"
@@ -16,104 +17,104 @@
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/bbground" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imageView5"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="11dp"
-            app:srcCompat="@drawable/date" />
-
-        <EditText
-            android:id="@+id/editTextPhone"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editText4"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="14dp"
-            android:ems="10"
-            android:hint="Phone No. (Optional)"
-            android:inputType="phone"
-            android:maxLines="1"
-            android:selectAllOnFocus="false"
-            android:textColorLink="?android:attr/colorPrimary" />
+            android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/editText4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editText2"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:hint="University/School"
-            android:inputType="textCapWords|textPersonName"
-            android:singleLine="true"
-            android:textColorLink="?android:attr/colorPrimary" />
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView5"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="11dp"
+                app:srcCompat="@drawable/date" />
 
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView4"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="9dp"
-            app:srcCompat="@drawable/subhead" />
+            <EditText
+                android:id="@+id/editTextPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editText4"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="14dp"
+                android:ems="10"
+                android:hint="Phone No. (Optional)"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:selectAllOnFocus="false"
+                android:textColorLink="?android:attr/colorPrimary" />
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="74dp"
-            app:srcCompat="@drawable/logo" />
+            <EditText
+                android:id="@+id/editText4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editText2"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="University/School"
+                android:inputType="textCapWords|textPersonName"
+                android:singleLine="true"
+                android:textColorLink="?android:attr/colorPrimary" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/imageView4"
-            android:layout_alignTop="@+id/imageView5"
-            android:layout_marginTop="11dp"
-            app:srcCompat="@drawable/fetsu" />
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView4"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="9dp"
+                app:srcCompat="@drawable/subhead" />
 
-        <EditText
-            android:id="@+id/editText2"
-            style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/editText4"
-            android:layout_below="@+id/imageView7"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="14dp"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="textCapWords|textPersonName"
-            android:textColorLink="?android:attr/colorPrimary" />
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="74dp"
+                app:srcCompat="@drawable/logo" />
 
-        <ImageView
-            android:id="@+id/googleSignInImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="65dp"
-            android:clickable="true"
-            android:elevation="4dp"
-            app:srcCompat="@drawable/gmailbutton" />
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/imageView4"
+                android:layout_alignTop="@+id/imageView5"
+                android:layout_marginTop="11dp"
+                app:srcCompat="@drawable/fetsu" />
+
+            <EditText
+                android:id="@+id/editText2"
+                style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/editText4"
+                android:layout_below="@+id/imageView7"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="14dp"
+                android:ems="10"
+                android:hint="Name"
+                android:inputType="textCapWords|textPersonName"
+                android:textColorLink="?android:attr/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/googleSignInImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="65dp"
+                android:clickable="true"
+                android:elevation="4dp"
+                app:srcCompat="@drawable/gmailbutton" />
 
 
-    </RelativeLayout>
+        </RelativeLayout>
     </FrameLayout>
 
 </ScrollView>

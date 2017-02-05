@@ -27,8 +27,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.ArrayList;
+
 import static com.hash.android.srijan.DashboardActivity.PREFS_NAME;
 import static com.hash.android.srijan.DashboardActivity.authUser;
+import static com.hash.android.srijan.fragment.SubscriptionFragment.arrayList;
+import static com.hash.android.srijan.fragment.SubscriptionFragment.mAdapter;
 
 public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static int RC_SIGN_IN = 0;
@@ -90,7 +94,8 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
             }
         };
 
-
+        arrayList = new ArrayList<>();
+        mAdapter = new SubscribedEventRecyclerAdapter();
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()

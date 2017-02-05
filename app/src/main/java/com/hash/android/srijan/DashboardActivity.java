@@ -14,8 +14,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +27,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.hash.android.srijan.fragment.DashboardFragment;
 import com.hash.android.srijan.fragment.SubscriptionFragment;
 import com.hash.android.srijan.functions.CircleTransform;
@@ -58,6 +60,10 @@ public class DashboardActivity extends AppCompatActivity
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Log.d("initToken", "Token:" + FirebaseInstanceId.getInstance().getToken());
+
+        FirebaseMessaging.getInstance().subscribeToTopic("User");
 
         updateDetails();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -142,12 +148,6 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.dashboard, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -157,9 +157,7 @@ public class DashboardActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -176,7 +174,8 @@ public class DashboardActivity extends AppCompatActivity
         } else if (id == R.id.nav_registrations) {
             fragment = new SubscriptionFragment();
         } else if (id == R.id.nav_hospitality) {
-            Toast.makeText(this, "Hospitality", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Hospitality", Toast.LENGTH_SHORT).show();
+            fragment = new HospitalityFragment();
         } else if (id == R.id.nav_sponsors) {
             Toast.makeText(this, "Sponsors", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_log_out) {
@@ -219,6 +218,7 @@ public class DashboardActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+
 
     }
 
