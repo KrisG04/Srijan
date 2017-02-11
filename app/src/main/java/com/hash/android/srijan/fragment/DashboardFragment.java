@@ -94,14 +94,13 @@ public class DashboardFragment extends android.support.v4.app.Fragment {
 
     private void updateContent() {
 
-        addEvent(getString(R.string.robticsEventName), R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
-        addEvent(getString(R.string.codeMe), R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
-        addEvent(getString(R.string.gaming), R.drawable.gamingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.gaminglogo);
-        addEvent("Manage Mania", R.drawable.manageeimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.managelogo);
-        addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
-        addEvent("Workshop", R.drawable.workshopimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.workshoplogo);
-        addEvent("Official Merchandise", R.drawable.merch2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.merchlogo);
-
+        addEvent(getString(R.string.robticsEventName), R.drawable.roboticsimage, "Welcome to a parallel universe. \nHere bots walk, talk, and their world totally rocks!", R.drawable.robotics);
+        addEvent(getString(R.string.codeMe), R.drawable.codingimage, "It's raining bugs and codes every day. \nAll you God gamers, come over and slay!\n The day is all yours.", R.drawable.codemelogo);
+        addEvent(getString(R.string.gaming), R.drawable.gamingimage, "You ask for it, and we shall play the same.\nWinner takes it all, but are you game?", R.drawable.gaminglogo);
+        addEvent("ManageMania", R.drawable.manageeimage, "The one who rules the world, what if he gives it a twirl?The businessman scratches his brain, but is everything really in vain?", R.drawable.managelogo);
+//        addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
+        addEvent("Mixed bag", R.drawable.workshopimage, "Expect the unexpected, challenge the unknown.\nImmerse yourselves in the mystery, and the path shall be shown.", R.drawable.workshoplogo);
+        addEvent("Official Merchandise", R.drawable.merch2, "Get merchandise and cool accessories from the biggest tech-fest in town!", R.drawable.merchlogo);
     }
 
     private void addEvent(String robotech, int codingimage, String s, int robotics) {

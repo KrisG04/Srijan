@@ -35,6 +35,7 @@ import static com.hash.android.srijan.fragment.SubscriptionFragment.arrayList;
 import static com.hash.android.srijan.fragment.SubscriptionFragment.mAdapter;
 
 public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+    public static FirebaseUser user;
     private static int RC_SIGN_IN = 0;
     private static String TAG = "LogInActivity";
     EditText name, college, phone;
@@ -59,40 +60,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
         mAuth = FirebaseAuth.getInstance();
 //
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                    nameValue = settings.getString("nameUser", null);
-                    collegeValue = settings.getString("collegeUser", null);
-                    phoneValue = settings.getString("phoneUser", null);
-                    if (nameValue != null) {
-                        authUser = new User();
-                        authUser.setName(nameValue);
-                        authUser.setEmail(user.getEmail());
-                        authUser.setId(user.getUid());
-                        authUser.setUniversity(collegeValue);
-                        authUser.setPhoneNumber(phoneValue);
-                        authUser.saveUser();
 
-                        // User is signed in
-                        Log.d("onAuthStateChanged:", "signed_in:" + user.getUid());
-                        Log.d("User", user.getEmail());
-                        Log.d("User", user.getDisplayName());
-                        finish();
-                        startActivity(new Intent(LogInActivity.this, DashboardActivity.class));
-                    } else {
-                        Toast.makeText(LogInActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    // User is signed out
-                    Log.d("onAuthStateChanged:", "signed_out");
-                }
-                // ...
-            }
-        };
 
         arrayList = new ArrayList<>();
         mAdapter = new SubscribedEventRecyclerAdapter();
@@ -109,6 +77,85 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
         ImageView googleSignInButton = (ImageView) findViewById(R.id.googleSignInImageView);
         googleSignInButton.setOnClickListener(this);
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    String nameStored = settings.getString("nameUser" + user.getUid(), null);
+                    String collegeStored = settings.getString("collegeUser" + user.getUid(), null);
+                    String phoneStored = settings.getString("phoneUser" + user.getUid(), null);
+
+
+                    if (nameStored == null) {
+                        nameValue = name.getText().toString().trim();
+                        collegeValue = college.getText().toString().trim();
+                        phoneValue = phone.getText().toString().trim();
+                        if (TextUtils.isEmpty(nameValue)) {
+                            Toast.makeText(LogInActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (TextUtils.isEmpty(collegeValue)) {
+                            Toast.makeText(LogInActivity.this, "Please enter your college", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        editor.putString("nameUser" + user.getUid(), nameValue);
+                        editor.putString("collegeUser" + user.getUid(), collegeValue);
+                        editor.putString("phoneUser" + user.getUid(), phoneValue);
+                        editor.commit();
+
+                    } else {
+                        nameValue = nameStored;
+                        collegeValue = collegeStored;
+                        phoneValue = phoneStored;
+                    }
+
+
+//                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    nameValue = settings.getString("nameUser" + user.getUid(), null);
+                    collegeValue = settings.getString("collegeUser" + user.getUid(), null);
+                    phoneValue = settings.getString("phoneUser" + user.getUid(), null);
+                    if (nameValue != null) {
+                        authUser = new User();
+                        authUser.setName(nameValue);
+                        authUser.setEmail(user.getEmail());
+                        authUser.setId(user.getUid());
+                        authUser.setUniversity(collegeValue);
+                        authUser.setPhoneNumber(phoneValue);
+                        try {
+                            authUser.saveUser();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        // User is signed in
+                        Log.d("onAuthStateChanged:", "signed_in:" + user.getUid());
+                        Log.d("email", user.getEmail());
+                        Log.d("name", user.getDisplayName());
+                        finish();
+                        startActivity(new Intent(LogInActivity.this, DashboardActivity.class));
+                    } else {
+                        Toast.makeText(LogInActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+//                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback() {
+//                        @Override
+//                        public void onResult(@NonNull Result result) {
+//                            mAuth.signOut();
+//                        }
+//
+//                    });
+
+                    // User is signed out
+                    Log.d("onAuthStateChanged:", "signed_out");
+                }
+                // ...
+            }
+        };
 
 //        //Set up facebook authentication
 //        callbackManager = CallbackManager.Factory.create();
@@ -244,41 +291,11 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void signIn() {
 
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        String nameStored = settings.getString("nameUser", null);
-        String collegeStored = settings.getString("collegeUser", null);
-        String phoneStored = settings.getString("phoneUser", null);
-
-
-        if (nameStored == null) {
-            nameValue = name.getText().toString().trim();
-            collegeValue = college.getText().toString().trim();
-            phoneValue = phone.getText().toString().trim();
-            if (TextUtils.isEmpty(nameValue)) {
-                Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (TextUtils.isEmpty(collegeValue)) {
-                Toast.makeText(this, "Please enter your college", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            editor.putString("nameUser", nameValue);
-            editor.putString("collegeUser", collegeValue);
-            editor.putString("phoneUser", phoneValue);
-            editor.commit();
-
-        } else {
-            nameValue = nameStored;
-            collegeValue = collegeStored;
-            phoneValue = phoneStored;
-        }
-
-
-
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
+
     }
 
 

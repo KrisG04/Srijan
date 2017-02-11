@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -67,7 +68,6 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         firebaseAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference("Events");
 
 
 
@@ -100,29 +100,39 @@ public class DetailsActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     pd.show();
-                                    mDatabase.child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).child(authUser.getId()).setValue(authUser)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Toast.makeText(DetailsActivity.this, "Subcribed succesfully!", Toast.LENGTH_SHORT).show();
-                                                        SharedPreferences.Editor editor = settings.edit();
-                                                        editor.putBoolean(finalEvent.get(posEvent).getHead() + getString(R.string.finalSharedPrefs), true); //isRegistered is set to true
-                                                        editor.commit();
-                                                        fab.setImageResource(R.drawable.ic_clear_black_24dp);
-                                                        FirebaseMessaging.getInstance().subscribeToTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
-                                                        if (!arrayList.isEmpty()) {
-                                                            arrayList.remove(finalEvent.get(posEvent));
-                                                            mAdapter.notifyDataSetChanged();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (user != null) {
+                                        try {
+                                            FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).setValue(authUser)
+//
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Toast.makeText(DetailsActivity.this, "Subcribed succesfully!", Toast.LENGTH_SHORT).show();
+                                                                SharedPreferences.Editor editor = settings.edit();
+                                                                editor.putBoolean(finalEvent.get(posEvent).getHead() + getString(R.string.finalSharedPrefs), true); //isRegistered is set to true
+                                                                editor.commit();
+                                                                fab.setImageResource(R.drawable.ic_clear_black_24dp);
+                                                                FirebaseMessaging.getInstance().subscribeToTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
+                                                                if (!arrayList.isEmpty()) {
+                                                                    arrayList.remove(finalEvent.get(posEvent));
+                                                                    mAdapter.notifyDataSetChanged();
+                                                                }
+                                                            } else
+                                                                Toast.makeText(DetailsActivity.this, "Failed to subscibe.", Toast.LENGTH_SHORT).show();
+                                                            pd.hide();
                                                         }
-                                                    } else
-                                                        Toast.makeText(DetailsActivity.this, "Failed to subscibe.", Toast.LENGTH_SHORT).show();
-                                                    pd.hide();
-                                                }
-                                            });
+                                                    });
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
 
                                 }
                             })
+
+
                             .setNegativeButton("Nope", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -141,7 +151,7 @@ public class DetailsActivity extends AppCompatActivity {
                                     final ProgressDialog pd1 = new ProgressDialog(DetailsActivity.this);
                                     pd1.setMessage("Unsubscribing...");
                                     pd1.show();
-                                    mDatabase.child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).child(authUser.getId()).removeValue(new DatabaseReference.CompletionListener() {
+                                    FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).removeValue(new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                             if (databaseError == null) {

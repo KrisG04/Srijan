@@ -30,7 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.hash.android.srijan.fragment.DashboardFragment;
+import com.hash.android.srijan.fragment.HospitalityFragment;
 import com.hash.android.srijan.fragment.SubscriptionFragment;
+import com.hash.android.srijan.fragment.TeamFragment;
 import com.hash.android.srijan.functions.CircleTransform;
 
 import java.util.ArrayList;
@@ -118,24 +120,6 @@ public class DashboardActivity extends AppCompatActivity
 
     }
 
-//    private void updateContent() {
-//
-//        addEvent(getString(R.string.robticsEventName), R.drawable.roboticsimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.robotics);
-//        addEvent(getString(R.string.codeMe), R.drawable.codingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.codemelogo);
-//        addEvent(getString(R.string.gaming), R.drawable.gamingimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.gaminglogo);
-//        addEvent("Manage Mania", R.drawable.manageeimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.managelogo);
-//        addEvent("Exhibition", R.drawable.exhiimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.exhilogo);
-//        addEvent("Workshop", R.drawable.workshopimage, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.workshoplogo);
-//        addEvent("Official Merchandise", R.drawable.merch2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam accumsan feugiat ipsum id imperdiet. In sed turpis odio.", R.drawable.merchlogo);
-//
-//    }
-//
-//    private void addEvent(String robotech, int codingimage, String s, int robotics) {
-//        eventArrayListTextHeading.add(robotech);
-//        eventArrayListImage.add(codingimage);
-//        eventArrayListTextContent.add(s);
-//        eventArrayListIcon.add(robotics);
-//    }
 
 
     @Override
@@ -181,12 +165,8 @@ public class DashboardActivity extends AppCompatActivity
         } else if (id == R.id.nav_log_out) {
             mAuth.signOut();
             startActivity(new Intent(DashboardActivity.this, LogInActivity.class));
-        } else if (id == R.id.nav_srijan) {
-            Toast.makeText(this, "Srijan", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_journal) {
-            Toast.makeText(this, "The JU Journal", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_ecell) {
-            Toast.makeText(this, "Entrepreneurship Cell", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_team) {
+            fragment = new TeamFragment();
         } else if (id == R.id.nav_about_us) {
             Toast.makeText(this, "About us", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_contact_us) {
@@ -229,18 +209,24 @@ public class DashboardActivity extends AppCompatActivity
 
         events = new ArrayList<>();
         events.clear();
-        events.add(new Event("Robotech", "Stair Climbing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Robotech", "RoboSoccer", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Robotech", "FastnFurious", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Robotech", "Line Follower Bot", getString(R.string.loremIpsum), R.drawable.manageeimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Robotech", "Image Processing Bot", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.robotics, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "Step-Up", getString(R.string.loremIpsum), R.drawable.stairimage, R.drawable.stairlogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "RoboSoccer", getString(R.string.loremIpsum), R.drawable.soccermage, R.drawable.soccerlogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "Death Race", getString(R.string.loremIpsum), R.drawable.fastimage, R.drawable.fastlogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "On-Track", getString(R.string.loremIpsum), R.drawable.lineimage, R.drawable.linelogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Robotech", "Image Processing Bot", getString(R.string.loremIpsum), R.drawable.imageimage, R.drawable.imagelogo, getString(R.string.stairclimbingBotDesc)));
 
-        events.add(new Event("Gaming", "FIFA 11", getString(R.string.loremIpsum), R.drawable.fifaimage, R.drawable.gaminglogo, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Gaming", "Dota 2", getString(R.string.loremIpsum), R.drawable.dotaimage, R.drawable.gaminglogo, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Gaming", "NFS Most Wanted", getString(R.string.loremIpsum), R.drawable.nfsimage, R.drawable.gaminglogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Gaming", "FIFA", getString(R.string.loremIpsum), R.drawable.fifaimage, R.drawable.fastlogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Gaming", "Counter Strike", getString(R.string.loremIpsum), R.drawable.csimage, R.drawable.cslogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Gaming", "NFS Most Wanted", getString(R.string.loremIpsum), R.drawable.nfsimage, R.drawable.nfslogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Gaming", "Mini Militia", getString(R.string.loremIpsum), R.drawable.minimilitiaimage, R.drawable.mlogo, getString(R.string.stairclimbingBotDesc)));
 
-        events.add(new Event("Code Me", "Sherlock", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.codemelogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Code Me", "Sherlock", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.stairlogo, getString(R.string.stairclimbingBotDesc)));
         events.add(new Event("Code Me", "Debugging", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.codemelogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("Code Me", "H42", getString(R.string.loremIpsum), R.drawable.codingimage, R.drawable.codemelogo, getString(R.string.stairclimbingBotDesc)));
+
+        events.add(new Event("ManageMania", "B Model", getString(R.string.loremIpsum), R.drawable.bplanimage, R.drawable.stairlogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("ManageMania", "Case Challenge", getString(R.string.loremIpsum), R.drawable.casechallenge, R.drawable.cslogo, getString(R.string.stairclimbingBotDesc)));
+        events.add(new Event("ManageMania", "Monopoly", getString(R.string.loremIpsum), R.drawable.monpoly, R.drawable.mlogo, getString(R.string.stairclimbingBotDesc)));
 
     }
 
@@ -272,9 +258,7 @@ public class DashboardActivity extends AppCompatActivity
             if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
                 try {
                     mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
-                } catch (ExecutionException e1) {
-                    e1.printStackTrace();
-                } catch (InterruptedException e1) {
+                } catch (ExecutionException | InterruptedException e1) {
                     e1.printStackTrace();
                 }
                 return true;

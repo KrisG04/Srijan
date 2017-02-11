@@ -8,14 +8,14 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="false"
-        android:cropToPadding="false"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/bbground" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/bground" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -29,36 +29,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="11dp"
                 app:srcCompat="@drawable/date" />
-
-            <EditText
-                android:id="@+id/editTextPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/editText4"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="14dp"
-                android:ems="10"
-                android:hint="Phone No. (Optional)"
-                android:inputType="phone"
-                android:maxLines="1"
-                android:selectAllOnFocus="false"
-                android:textColorLink="?android:attr/colorPrimary" />
-
-            <EditText
-                android:id="@+id/editText4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/editText2"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:hint="University/School"
-                android:inputType="textCapWords|textPersonName"
-                android:singleLine="true"
-                android:textColorLink="?android:attr/colorPrimary" />
 
             <ImageView
                 android:id="@+id/imageView7"
@@ -79,28 +49,12 @@
                 app:srcCompat="@drawable/logo" />
 
             <ImageView
-                android:id="@+id/imageView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/imageView4"
                 android:layout_alignTop="@+id/imageView5"
                 android:layout_marginTop="11dp"
                 app:srcCompat="@drawable/fetsu" />
-
-            <EditText
-                android:id="@+id/editText2"
-                style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/editText4"
-                android:layout_below="@+id/imageView7"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="14dp"
-                android:ems="10"
-                android:hint="Name"
-                android:inputType="textCapWords|textPersonName"
-                android:textColorLink="?android:attr/colorPrimary" />
 
             <ImageView
                 android:id="@+id/googleSignInImageView"
@@ -110,11 +64,111 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="65dp"
                 android:clickable="true"
-                android:elevation="4dp"
                 app:srcCompat="@drawable/gmailbutton" />
+
+            <LinearLayout
+                android:id="@+id/ll1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/imageView7"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="0"
+                    app:srcCompat="@drawable/ic_person_black_24dp" />
+
+                <EditText
+                    android:id="@+id/editText2"
+                    style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Name"
+                    android:inputType="textCapWords|textPersonName"
+                    android:textColorLink="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/ll1"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="0"
+                    app:srcCompat="@drawable/ic_account_balance_black_24dp" />
+
+                <EditText
+                    android:id="@+id/editText4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="19dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="University/School"
+                    android:inputType="textCapWords|textPersonName"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textColorLink="?android:attr/colorPrimary" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/linearLayout"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="0"
+                    app:srcCompat="@drawable/ic_local_phone_black_24dp" />
+
+                <EditText
+                    android:id="@+id/editTextPhone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linearLayout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="19dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Phone No. (Optional)"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:selectAllOnFocus="false"
+                    android:textColorLink="?android:attr/colorPrimary" />
+            </LinearLayout>
 
 
         </RelativeLayout>
+
     </FrameLayout>
 
 </ScrollView>
