@@ -7,15 +7,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
 
         <TextView
             android:id="@+id/subscriptionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/subscriptionEmptyImageView"
+            android:layout_below="@id/subscriptionEmptyImageView"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="171dp"
             android:fontFamily="serif"
             android:text="Your subscriptions"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"

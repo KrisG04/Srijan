@@ -25,6 +25,7 @@ import com.hash.android.srijan.R;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static com.hash.android.srijan.DashboardActivity.authUser;
 import static com.hash.android.srijan.DashboardActivity.finalEvent;
 import static com.hash.android.srijan.EventsActivity.events;
 import static com.hash.android.srijan.EventsActivity.posEvent;
@@ -70,7 +71,7 @@ public class SubscriptionFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(DashboardActivity.PREFS_NAME, 0);
 
         for (int i = 0; i < events.size(); i++) {
-            boolean isRegistered = sharedPreferences.getBoolean(events.get(i).getHead() + getString(R.string.finalSharedPrefs), false);
+            boolean isRegistered = sharedPreferences.getBoolean(events.get(i).getHead() + authUser.getId(), false);
             if (isRegistered) {
                 arrayList.add(events.get(i));
             }

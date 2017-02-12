@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,6 +40,10 @@ public class DetailsActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference mDatabase;
+
+    private SharedPreferences settings;
+
+    private FloatingActionButton fab;
 
 
     @Override
@@ -70,15 +74,14 @@ public class DetailsActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
 
-
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("Registering...");
-        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        settings = getSharedPreferences(PREFS_NAME, 0);
 
-        boolean isRegistered = settings.getBoolean(finalEvent.get(posEvent).getHead() + getString(R.string.finalSharedPrefs), false);
+        boolean isRegistered = settings.getBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), false);
 
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         if (!isRegistered)
             fab.setImageResource(R.drawable.ic_games_black_24dp);
         else
@@ -89,7 +92,7 @@ public class DetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                boolean isRegistered = settings.getBoolean(finalEvent.get(posEvent).getHead() + getString(R.string.finalSharedPrefs), false);
+                boolean isRegistered = settings.getBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), false);
 
                 if (!isRegistered) {
 
@@ -99,36 +102,7 @@ public class DetailsActivity extends AppCompatActivity {
                             .setPositiveButton("Yes, I'm in!", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    pd.show();
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if (user != null) {
-                                        try {
-                                            FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).setValue(authUser)
-//
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Toast.makeText(DetailsActivity.this, "Subcribed succesfully!", Toast.LENGTH_SHORT).show();
-                                                                SharedPreferences.Editor editor = settings.edit();
-                                                                editor.putBoolean(finalEvent.get(posEvent).getHead() + getString(R.string.finalSharedPrefs), true); //isRegistered is set to true
-                                                                editor.commit();
-                                                                fab.setImageResource(R.drawable.ic_clear_black_24dp);
-                                                                FirebaseMessaging.getInstance().subscribeToTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
-                                                                if (!arrayList.isEmpty()) {
-                                                                    arrayList.remove(finalEvent.get(posEvent));
-                                                                    mAdapter.notifyDataSetChanged();
-                                                                }
-                                                            } else
-                                                                Toast.makeText(DetailsActivity.this, "Failed to subscibe.", Toast.LENGTH_SHORT).show();
-                                                            pd.hide();
-                                                        }
-                                                    });
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-
+                                    subscribe();
                                 }
                             })
 
@@ -136,7 +110,7 @@ public class DetailsActivity extends AppCompatActivity {
                             .setNegativeButton("Nope", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    Toast.makeText(DetailsActivity.this, "Subscription cancelled.", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(DetailsActivity.this, "Subscription cancelled.", Toast.LENG).show();
                                 }
                             })
                             .show();
@@ -148,37 +122,13 @@ public class DetailsActivity extends AppCompatActivity {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    final ProgressDialog pd1 = new ProgressDialog(DetailsActivity.this);
-                                    pd1.setMessage("Unsubscribing...");
-                                    pd1.show();
-                                    FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).removeValue(new DatabaseReference.CompletionListener() {
-                                        @Override
-                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                            if (databaseError == null) {
-                                                //Deleted succesfully
-                                                FirebaseMessaging.getInstance().unsubscribeFromTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
-                                                Log.d("Subscribed Topic:", finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
-                                                Toast.makeText(DetailsActivity.this, "Unsubcribed successfully!", Toast.LENGTH_SHORT).show();
-                                                SharedPreferences.Editor editor = settings.edit();
-                                                editor.putBoolean(finalEvent.get(posEvent).getHead() + getString(R.string.finalSharedPrefs), false);
-                                                editor.commit();
-                                                fab.setImageResource(R.drawable.ic_games_black_24dp);
-                                                if (!arrayList.isEmpty()) {
-                                                    arrayList.remove(finalEvent.get(posEvent));
-                                                    mAdapter.notifyDataSetChanged();
-                                                }
-
-                                            } else
-                                                Toast.makeText(DetailsActivity.this, "Failed to remove event. Try again later", Toast.LENGTH_SHORT).show();
-                                            pd1.hide();
-                                        }
-                                    });
+                                    unsubscribe();
                                 }
                             })
                             .setNegativeButton("Nope", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-
+                                    //Ignore
                                 }
                             })
                             .show();
@@ -187,13 +137,119 @@ public class DetailsActivity extends AppCompatActivity {
                 }
 
             }
-//                else
-//                    Toast.makeText(DetailsActivity.this, "Already subscribed", Toast.LENGTH_SHORT).show();
-
 
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().home
+
+    }
+
+    private void subscribe() {
+
+        //Method to subscribe to the specific topic
+        final ProgressDialog pd = new ProgressDialog(DetailsActivity.this);
+        pd.setMessage("Subscribing...");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            try {
+                pd.show();
+                FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).setValue(authUser)
+//
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    SharedPreferences.Editor editor = settings.edit();
+                                    editor.putBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), true); //isRegistered is set to true
+                                    editor.commit();
+                                    fab.setImageResource(R.drawable.ic_clear_black_24dp);
+                                    FirebaseMessaging.getInstance().subscribeToTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
+                                    if (!arrayList.isEmpty()) {
+                                        arrayList.remove(finalEvent.get(posEvent));
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                    pd.hide();
+                                    Snackbar.make(findViewById(R.id.rootViewDetails), "Subscribed succesfully!", Snackbar.LENGTH_SHORT)
+                                            .setAction("UNDO", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    unsubscribe();
+                                                }
+                                            })
+                                            .setActionTextColor(getColor(R.color.colorAccent))
+                                            .show();
+                                } else {
+                                    pd.hide();
+                                    Snackbar.make(findViewById(R.id.rootViewDetails), "Failed to subscribe.", Snackbar.LENGTH_SHORT)
+                                            .setActionTextColor(getColor(R.color.colorAccent))
+                                            .setAction("RETRY", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    subscribe();
+                                                }
+                                            })
+                                            .show();
+
+//                                    Toast.makeText(DetailsActivity.this, "Failed to subscribe.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void unsubscribe() {
+
+        final ProgressDialog pd1 = new ProgressDialog(DetailsActivity.this);
+        pd1.setMessage("Un-registering...");
+        pd1.show();
+        FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError == null) {
+                    //Deleted succesfully
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
+                    Log.d("Subscribed Topic:", finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
+                    Snackbar.make(findViewById(R.id.rootViewDetails), "Unregistered succesfully!", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    subscribe();
+//                                    pd1.hide();
+
+                                }
+                            })
+                            .setActionTextColor(getResources().getColor(R.color.colorAccent))
+                            .show();
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), false);
+                    editor.commit();
+                    fab.setImageResource(R.drawable.ic_games_black_24dp);
+                    if (!arrayList.isEmpty()) {
+                        arrayList.remove(finalEvent.get(posEvent));
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    pd1.hide();
+                } else {
+                    Snackbar.make(findViewById(R.id.rootViewDetails), "Failed to remove event. Try again later", Snackbar.LENGTH_SHORT)
+                            .setActionTextColor(getColor(R.color.colorAccent))
+                            .setAction("RETRY", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    unsubscribe();
+//                                    pd1.hide();
+
+                                }
+                            }).show();
+//                    Toast.makeText(DetailsActivity.this, "Failed to remove event. Try again later", Toast.LENGTH_SHORT).show();
+                    pd1.hide();
+                }
+            }
+        });
     }
 
 

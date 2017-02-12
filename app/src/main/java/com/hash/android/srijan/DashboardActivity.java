@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -39,6 +42,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static com.hash.android.srijan.EventsActivity.events;
+import static com.hash.android.srijan.LogInActivity.mGoogleApiClient;
 
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -163,7 +167,18 @@ public class DashboardActivity extends AppCompatActivity
         } else if (id == R.id.nav_sponsors) {
             Toast.makeText(this, "Sponsors", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_log_out) {
-            mAuth.signOut();
+            if (mGoogleApiClient.isConnected()) {
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                // ...
+                                mAuth.signOut();
+                            }
+                        });
+            } else {
+                mAuth.signOut();
+            }
             startActivity(new Intent(DashboardActivity.this, LogInActivity.class));
         } else if (id == R.id.nav_team) {
             fragment = new TeamFragment();

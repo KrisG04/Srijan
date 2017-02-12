@@ -36,13 +36,13 @@ import static com.hash.android.srijan.fragment.SubscriptionFragment.mAdapter;
 
 public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     public static FirebaseUser user;
+    public static GoogleApiClient mGoogleApiClient;
     private static int RC_SIGN_IN = 0;
     private static String TAG = "LogInActivity";
     EditText name, college, phone;
     String nameValue, collegeValue, phoneValue;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private GoogleApiClient mGoogleApiClient;
     private ProgressDialog pd;
 
     @Override
@@ -62,6 +62,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 //
 
 
+
         arrayList = new ArrayList<>();
         mAdapter = new SubscribedEventRecyclerAdapter();
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -75,6 +76,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
 
+        mGoogleApiClient.connect();
         ImageView googleSignInButton = (ImageView) findViewById(R.id.googleSignInImageView);
         googleSignInButton.setOnClickListener(this);
 
@@ -142,15 +144,9 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                         Toast.makeText(LogInActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-//                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback() {
-//                        @Override
-//                        public void onResult(@NonNull Result result) {
-//                            mAuth.signOut();
-//                        }
-//
-//                    });
 
-                    // User is signed out
+
+//                     User is signed out
                     Log.d("onAuthStateChanged:", "signed_out");
                 }
                 // ...
@@ -239,6 +235,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+            mGoogleApiClient.disconnect();
         }
 
     }
@@ -246,6 +243,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onStart() {
         super.onStart();
+        mGoogleApiClient.connect();
         mAuth.addAuthStateListener(mAuthListener);
 
     }
