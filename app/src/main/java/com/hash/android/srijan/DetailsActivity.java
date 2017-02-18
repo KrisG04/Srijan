@@ -1,7 +1,9 @@
 package com.hash.android.srijan;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,6 +39,7 @@ import static com.hash.android.srijan.fragment.SubscriptionFragment.mAdapter;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    Context context;
     CollapsingToolbarLayout collapsingToolbarLayout;
 
     private FirebaseAuth firebaseAuth;
@@ -59,8 +63,12 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
+        MySafetyMethod();
 //        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fa);
         setContentView(R.layout.activity_details);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -70,6 +78,17 @@ public class DetailsActivity extends AppCompatActivity {
         collapsingToolbarLayout.setTitle(finalEvent.get(posEvent).getHead());
         collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
 
+        TextView detailsTextView = (TextView) findViewById(R.id.detailsTextView);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            detailsTextView.setText(Html.fromHtml(finalEvent.get(posEvent).getDetailedDescription(), Html.FROM_HTML_MODE_COMPACT));
+//        }
+
+//        else{
+        detailsTextView.setText(Html.fromHtml(finalEvent.get(posEvent).getDetailedDescription()));
+//        detailsTextView.setText(getText(R.string.stairclimbingBotDesc));
+//        }
+
+//detailsTextV
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -143,6 +162,33 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Modifies the standard behavior to allow results to be delivered to fragments.
+     * This imposes a restriction that requestCode be <= 0xffff.
+     *
+     * @param intent
+     * @param requestCode
+     */
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
+    private void MySafetyMethod() {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable throwable) {
+                System.out.println("inside the process of handling exceptions");
+                System.err.println("inside the process of handling exceptions");
+                throwable.printStackTrace();
+                System.exit(2);
+
+                startActivity(new Intent(context, LogInActivity.class));
+                finish();
+            }
+        });
+    }
+
     private void subscribe() {
 
         //Method to subscribe to the specific topic
@@ -201,6 +247,20 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void unsubscribe() {
 
         final ProgressDialog pd1 = new ProgressDialog(DetailsActivity.this);
@@ -254,3 +314,29 @@ public class DetailsActivity extends AppCompatActivity {
 
 
 }
+
+/*Problem Statement: \n
+<h1>Design a manually controlled robot to climb stairs.</h2> \n
+<b>Robot Specifications:</b> \n
+1. The dimension of robot is 25cmx20cmx20cm, with 10% tolerance. \n
+2. There’s no restriction in controlling ways, i.e., control can be wired or wireless.\n
+3. Readymade toys/Lego kits/Hydraulic System/IC engines are not allowed.\n
+<b>Team Specifications:<b>\n
+1. Team should consist maximum 4 members.\n
+2. Teams can be formed with cross college members.\n
+3. Only 2 persons will be allowed inside the arena.\n
+4. Only one robot from each team is allowed inside the arena.\n
+<b>Rules and Regulations:</b>\n
+1. Unethical behavior, e.g., speaking/indicating abusive in the arena, pulling a fight with coordinators/volunteers can cause suspension of the team from the event.\n
+2. Damaging the arena may lead to direct disqualification.\n
+3. The decision of team Step-Up is final.\n
+4. The coordinators have all rights to take final decisions during the event.\n
+5. The robot maybe disqualified for violating the safety measures.\n\n
+Event Rules:\n
+1. Each team will be provided with a 220V AC – 50Hz supply. Any kind of onboard power source have to be arranged by the team.
+2. There will be 2 rounds.
+Round 1: The Robot has to climb up a stair. Points will be on climbing up and time taken. The teams with more points get selected for the round 2.
+Round 2: In this round the robot has to go through a path, a stair will included in it. There will be certain objectives the robot has to fulfill, which will be disclosed at the time of arena.
+3. Damaging the arena may cause direct disqualification.
+Point System: This will be introduced at the time of event.
+Stair Details: The stairs will be like this*/

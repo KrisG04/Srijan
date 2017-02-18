@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LogInActivity"
+            android:clearTaskOnLaunch="true"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -22,10 +23,12 @@
         </activity>
         <activity
             android:name=".DashboardActivity"
+            android:finishOnTaskLaunch="true"
             android:label="Explore"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EventsActivity"
+            android:finishOnTaskLaunch="true"
             android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -34,6 +37,7 @@
         </activity>
         <activity
             android:name=".DetailsActivity"
+            android:finishOnTaskLaunch="true"
             android:label="@string/title_activity_details"
             android:parentActivityName=".EventsActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -41,7 +45,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hash.android.srijan.EventsActivity" />
         </activity>
-        <activity android:name=".SplashActivity"></activity>
+        <activity
+            android:name=".SplashActivity"
+            android:finishOnTaskLaunch="true" />
+
 
         <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
