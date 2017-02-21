@@ -52,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/imageView4"
+                android:layout_alignRight="@+id/imageView4"
                 android:layout_alignTop="@+id/imageView5"
                 android:layout_marginTop="11dp"
                 app:srcCompat="@drawable/fetsu" />
@@ -70,6 +71,7 @@
                 android:id="@+id/ll1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/imageView7"
                 android:layout_marginLeft="8dp"
@@ -93,7 +95,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Name"
+                    android:hint="@string/name"
                     android:inputType="textCapWords|textPersonName"
                     android:textColorLink="@color/white" />
 
@@ -103,6 +105,7 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/ll1"
                 android:layout_marginLeft="8dp"
@@ -120,16 +123,15 @@
                     android:id="@+id/editText4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="19dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="University/School"
+                    android:hint="@string/university_school"
                     android:inputType="textCapWords|textPersonName"
                     android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textColorLink="?android:attr/colorPrimary" />
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -152,18 +154,15 @@
                     android:id="@+id/editTextPhone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/linearLayout"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="19dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Phone No. (Optional)"
+                    android:hint="@string/phone_no_optional"
                     android:inputType="phone"
                     android:maxLines="1"
-                    android:selectAllOnFocus="false"
-                    android:textColorLink="?android:attr/colorPrimary" />
+                    android:selectAllOnFocus="false" />
             </LinearLayout>
 
 

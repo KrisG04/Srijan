@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="3dp"
+    android:layout_marginRight="3dp"
+    android:layout_marginTop="4dp"
+    android:clickable="true"
+    android:elevation="16dp"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+
+    <ImageView
+        android:id="@+id/sponsorsImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY" />
+
+</android.support.v7.widget.CardView>

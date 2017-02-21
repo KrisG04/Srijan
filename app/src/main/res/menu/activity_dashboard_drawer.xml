@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <group android:checkableBehavior="single">
+    <item android:checkableBehavior="single">
         <item
             android:id="@+id/nav_explore"
             android:icon="@drawable/ic_home_black_24dp"
@@ -12,18 +12,38 @@
             android:icon="@drawable/ic_content_paste_black_24dp"
             android:title="My Registrations" />
         <item
-            android:id="@+id/nav_hospitality"
-            android:icon="@drawable/ic_weekend_black_24dp"
-            android:title="Hospitality" />
-        <item
             android:id="@+id/nav_sponsors"
             android:icon="@drawable/ic_local_offer_black_24dp"
             android:title="Sponsors" />
         <item
             android:id="@+id/nav_team"
-            android:icon="@drawable/ic_developer_board_black_24dp"
-            android:title="Team" />
-    </group>
+
+            android:title="Team">
+            <menu>
+
+                <item
+                    android:id="@+id/nav_team_srijan"
+                    android:icon="@drawable/ic_developer_board_black_24dp"
+                    android:title="Srijan" />
+
+                <item
+                    android:id="@+id/nav_team_journal"
+                    android:icon="@drawable/ic_import_contacts_black_24dp"
+                    android:title="Journal" />
+
+                <item
+                    android:id="@+id/nav_team_ecell"
+                    android:icon="@drawable/ic_wb_incandescent_black_24dp"
+                    android:title="E-Cell" />
+
+                <item
+                    android:id="@+id/nav_team_sc"
+                    android:icon="@drawable/ic_fingerprint_black_24dp"
+                    android:title="Science Club" />
+            </menu>
+        </item>
+
+    </item>
 
 
     <item android:title="Other">

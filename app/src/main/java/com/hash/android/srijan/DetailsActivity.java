@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -64,11 +65,11 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        MySafetyMethod();
+//        MySafetyMethod();
 //        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fa);
         setContentView(R.layout.activity_details);
 
-
+//        getSharedPreferences("MyPrefsFileNew",0).getString("posEvent")
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -79,14 +80,11 @@ public class DetailsActivity extends AppCompatActivity {
         collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
 
         TextView detailsTextView = (TextView) findViewById(R.id.detailsTextView);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            detailsTextView.setText(Html.fromHtml(finalEvent.get(posEvent).getDetailedDescription(), Html.FROM_HTML_MODE_COMPACT));
-//        }
-
-//        else{
-        detailsTextView.setText(Html.fromHtml(finalEvent.get(posEvent).getDetailedDescription()));
-//        detailsTextView.setText(getText(R.string.stairclimbingBotDesc));
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            detailsTextView.setText(Html.fromHtml(finalEvent.get(posEvent).getDetailedDescription(), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            detailsTextView.setText(Html.fromHtml(finalEvent.get(posEvent).getDetailedDescription()));
+        }
 
 //detailsTextV
 
@@ -174,20 +172,20 @@ public class DetailsActivity extends AppCompatActivity {
         super.startActivityForResult(intent, requestCode);
     }
 
-    private void MySafetyMethod() {
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable throwable) {
-                System.out.println("inside the process of handling exceptions");
-                System.err.println("inside the process of handling exceptions");
-                throwable.printStackTrace();
-                System.exit(2);
-
-                startActivity(new Intent(context, LogInActivity.class));
-                finish();
-            }
-        });
-    }
+//    private void MySafetyMethod() {
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread thread, Throwable throwable) {
+//                System.out.println("inside the process of handling exceptions");
+//                System.err.println("inside the process of handling exceptions");
+//                throwable.printStackTrace();
+//                System.exit(2);
+//
+//                startActivity(new Intent(context, LogInActivity.class));
+//                finish();
+//            }
+//        });
+//    }
 
     private void subscribe() {
 
