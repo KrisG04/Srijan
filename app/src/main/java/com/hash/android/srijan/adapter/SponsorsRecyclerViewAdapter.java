@@ -83,6 +83,7 @@ public class SponsorsRecyclerViewAdapter extends RecyclerView.Adapter<SponsorsRe
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView sponsorsImageView;
 
+
         ViewHolder(View itemView) {
             super(itemView);
             sponsorsImageView = (ImageView) itemView.findViewById(R.id.sponsorsImageView);

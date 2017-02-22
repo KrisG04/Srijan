@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -60,6 +61,13 @@ public class DetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    protected void onUserLeaveHint() {
+//        super.onUserLeaveHint();
+//        startActivity(new Intent(DetailsActivity.this, LogInActivity.class));
+//        finish();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +205,8 @@ public class DetailsActivity extends AppCompatActivity {
         if (user != null) {
             try {
                 pd.show();
-                FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).setValue(authUser)
+
+                FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).child(user.getUid()).setValue(authUser)
 //
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -220,12 +229,12 @@ public class DetailsActivity extends AppCompatActivity {
                                                     unsubscribe();
                                                 }
                                             })
-                                            .setActionTextColor(getColor(R.color.colorAccent))
+//                                            .setActionTextColor(getColor(R.color.colorAccent))
                                             .show();
                                 } else {
                                     pd.hide();
                                     Snackbar.make(findViewById(R.id.rootViewDetails), "Failed to subscribe.", Snackbar.LENGTH_SHORT)
-                                            .setActionTextColor(getColor(R.color.colorAccent))
+//                                            .setActionTextColor(getColor(R.color.colorAccent))
                                             .setAction("RETRY", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
@@ -236,6 +245,8 @@ public class DetailsActivity extends AppCompatActivity {
 
 //                                    Toast.makeText(DetailsActivity.this, "Failed to subscribe.", Toast.LENGTH_SHORT).show();
                                 }
+
+                                pd.dismiss();
                             }
                         });
             } catch (Exception e) {
@@ -264,50 +275,56 @@ public class DetailsActivity extends AppCompatActivity {
         final ProgressDialog pd1 = new ProgressDialog(DetailsActivity.this);
         pd1.setMessage("Un-registering...");
         pd1.show();
-        FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError == null) {
-                    //Deleted succesfully
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
-                    Log.d("Subscribed Topic:", finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
-                    Snackbar.make(findViewById(R.id.rootViewDetails), "Unregistered succesfully!", Snackbar.LENGTH_LONG)
-                            .setAction("UNDO", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    subscribe();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseDatabase.getInstance().getReference("Events").child(finalEvent.get(posEvent).getHead()).child(authUser.getName()).child(user.getUid()).removeValue(new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError == null) {
+                        //Deleted succesfully
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
+                        Log.d("Subscribed Topic:", finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
+                        Snackbar.make(findViewById(R.id.rootViewDetails), "Unregistered succesfully!", Snackbar.LENGTH_LONG)
+                                .setAction("UNDO", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        subscribe();
 //                                    pd1.hide();
 
-                                }
-                            })
-                            .setActionTextColor(getResources().getColor(R.color.colorAccent))
-                            .show();
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), false);
-                    editor.commit();
-                    fab.setImageResource(R.drawable.ic_games_black_24dp);
-                    if (!arrayList.isEmpty()) {
-                        arrayList.remove(finalEvent.get(posEvent));
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    pd1.hide();
-                } else {
-                    Snackbar.make(findViewById(R.id.rootViewDetails), "Failed to remove event. Try again later", Snackbar.LENGTH_SHORT)
-                            .setActionTextColor(getColor(R.color.colorAccent))
-                            .setAction("RETRY", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
+                                    }
+                                })
+//                                .setActionTextColor(getResources().getColor(R.color.colorAccent))
+                                .show();
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), false);
+                        editor.commit();
+                        fab.setImageResource(R.drawable.ic_games_black_24dp);
+                        if (!arrayList.isEmpty()) {
+                            arrayList.remove(finalEvent.get(posEvent));
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        pd1.hide();
+                    } else {
+                        Snackbar.make(findViewById(R.id.rootViewDetails), "Failed to remove event. Try again later", Snackbar.LENGTH_SHORT)
+//                                .setActionTextColor(getColor(R.color.colorAccent))
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
-                                    unsubscribe();
+                                        unsubscribe();
 //                                    pd1.hide();
 
-                                }
-                            }).show();
+                                    }
+                                }).show();
 //                    Toast.makeText(DetailsActivity.this, "Failed to remove event. Try again later", Toast.LENGTH_SHORT).show();
-                    pd1.hide();
+                        pd1.hide();
+                    }
+                    pd1.dismiss();
                 }
-            }
-        });
+            });
+        } else {
+            Toast.makeText(this, "Un-authenticated. Sign in again!", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

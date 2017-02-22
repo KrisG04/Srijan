@@ -1,5 +1,6 @@
 package com.hash.android.srijan.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -7,11 +8,14 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.hash.android.srijan.R;
 import com.hash.android.srijan.adapter.SponsorsRecyclerViewAdapter;
 
 import java.util.ArrayList;
+
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 
 public class SponsorsFragment extends android.support.v4.app.Fragment {
@@ -69,13 +73,26 @@ public class SponsorsFragment extends android.support.v4.app.Fragment {
 
         updateResources();
 
+
+        SharedPreferences settings = getActivity().getSharedPreferences("MyPrefsFileNew", 0);
+
+        SharedPreferences.Editor editor = settings.edit();
+        if (settings.getBoolean("firstLoad", true)) {
+            editor.putBoolean("firstLoad", false);
+            editor.apply();
+            Toast.makeText(getActivity(), "Loading resources...", Toast.LENGTH_SHORT).show();
+        }
         RecyclerView sponsorsRecyclerView = (RecyclerView) rootView.findViewById(R.id.sponsorsRecyclerView);
-        sponsorsRecyclerView.setHasFixedSize(true);
+
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mLayoutManager.setItemPrefetchEnabled(false);
+        sponsorsRecyclerView.setHasFixedSize(true);
+        sponsorsRecyclerView.setItemAnimator(new SlideInUpAnimator());
+        SponsorsRecyclerViewAdapter sponsorsRecyclerViewAdapter = new SponsorsRecyclerViewAdapter();
+//        sponsorsRecyclerViewAdapter.setHasStableIds(true);
         sponsorsRecyclerView.setLayoutManager(mLayoutManager);
-        sponsorsRecyclerView.setAdapter(new SponsorsRecyclerViewAdapter());
+        sponsorsRecyclerView.setAdapter(sponsorsRecyclerViewAdapter);
 
 
         return rootView;
@@ -101,7 +118,7 @@ public class SponsorsFragment extends android.support.v4.app.Fragment {
         sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/gandhi.png?alt=media&token=23901af3-1d8c-472f-93c0-29613f325a1b");
         sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/satya.png?alt=media&token=0698acf9-67b4-4719-ae7c-7b4963de2d0a");
         sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/teachforindia.png?alt=media&token=3d24fd52-5c5e-42da-8aa7-3a4065117835");
-        sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/princeton.png?alt=media&token=bd2e569b-9095-4508-9032-265655606ea9");
+        sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/princeton.png?alt=media&token=f1661613-caa2-4f28-8f94-2ce771a19f39");
         sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/campusfrance.png?alt=media&token=8ad0e4c3-172c-45c7-b926-7c78392f60f1");
         sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/jamboree.png?alt=media&token=f7151aa2-e692-43bd-997f-c058130b46f2");
         sponsorsUrl.add("https://firebasestorage.googleapis.com/v0/b/srijan-17-e257c.appspot.com/o/idp.png?alt=media&token=02144c36-5447-4da1-a705-910399150ad6");

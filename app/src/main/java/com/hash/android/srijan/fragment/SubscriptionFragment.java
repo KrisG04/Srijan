@@ -15,11 +15,14 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hash.android.srijan.DashboardActivity;
 import com.hash.android.srijan.DetailsActivity;
 import com.hash.android.srijan.Event;
+import com.hash.android.srijan.LogInActivity;
 import com.hash.android.srijan.R;
 
 import java.util.ArrayList;
@@ -64,8 +67,14 @@ public class SubscriptionFragment extends Fragment {
 //        tr.commit();
         View rootView = inflater.inflate(R.layout.fragment_subscriptions, container, false);
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(getActivity(), LogInActivity.class));
+            getActivity().finish();
+        }
 
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null)
+            mAdapter.notifyDataSetChanged();
         arrayList = new ArrayList<>();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(DashboardActivity.PREFS_NAME, 0);

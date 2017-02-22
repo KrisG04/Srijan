@@ -2,10 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:checkableBehavior="single">
+    <item
+        android:checkableBehavior="single"
+        android:title="Drawer">
         <item
             android:id="@+id/nav_explore"
-            android:icon="@drawable/ic_home_black_24dp"
+            android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="Explore" />
         <item
             android:id="@+id/nav_registrations"
@@ -16,7 +18,6 @@
             android:icon="@drawable/ic_local_offer_black_24dp"
             android:title="Sponsors" />
         <item
-            android:id="@+id/nav_team"
 
             android:title="Team">
             <menu>

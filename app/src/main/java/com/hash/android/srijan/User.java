@@ -19,6 +19,7 @@ public class User {
     private String phoneNumber;
     private String email;
     private String university;
+    private String photoURL;
 
     public String getUniversity() {
         return university;
@@ -67,7 +68,7 @@ public class User {
             //user signed in
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("users");
-            myRef.child(getName()).push().setValue(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+            myRef.child(getName()).child(this.getId()).setValue(this).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     setId(null);
@@ -76,5 +77,13 @@ public class User {
 
         } else
             Log.d("saveUser:", "User not authenticated");
+    }
+
+    public String getPhotoURL() {
+        return photoURL;
+    }
+
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 }

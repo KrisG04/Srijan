@@ -69,25 +69,67 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         Log.d("initToken", "Token:" + FirebaseInstanceId.getInstance().getToken());
         arrayList = new ArrayList<>();
         FirebaseMessaging.getInstance().subscribeToTopic("User");
 
         updateDetails();
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        SharedPreferences settings1 = getSharedPreferences("MyPrefsFileNew", 0);
+        if (authUser == null && user != null) {
+            String nameValue = settings1.getString("nameUser" + user.getUid(), null);
+            String collegeValue = settings1.getString("collegeUser" + user.getUid(), null);
+            String phoneValue = settings1.getString("phoneUser" + user.getUid(), null);
+            if (nameValue != null) {
+                authUser = new User();
+                authUser.setName(nameValue);
+                authUser.setEmail(user.getEmail());
+                authUser.setId(user.getUid());
+                authUser.setUniversity(collegeValue);
+                authUser.setPhoneNumber(phoneValue);
+                try {
+                    authUser.saveUser();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+
+            } else {
+                startActivity(new Intent(this, LogInActivity.class));
+            }
+        }
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.frame_container, new DashboardFragment())
-                .commit();
+        if (getIntent().getBooleanExtra("launchFromNotification", false)) {
 
+            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+            if (user1 == null) {
+                startActivity(new Intent(this, LogInActivity.class));
+                finish();
+            }
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_container, new SubscriptionFragment())
+                    .commit();
+        } else {
 
-        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+            if (user1 == null) {
+                startActivity(new Intent(this, LogInActivity.class));
+                finish();
+            }
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_container, new DashboardFragment())
+                    .commit();
+
+        }
+
+//        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 //        boolean dialogShown = settings.getBoolean("dialogShownFinal2", false);
 
 
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+//        mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser user = mAuth.getCurrentUser();
 
         assert user != null;
         urlProfileImg = String.valueOf(user.getPhotoUrl());
@@ -174,7 +216,9 @@ public class DashboardActivity extends AppCompatActivity
                             }
                         });
             } else {
-                mAuth.signOut();
+                FirebaseAuth.getInstance().signOut();
+//                System.exit(0);
+                finish();
             }
             startActivity(new Intent(DashboardActivity.this, LogInActivity.class));
         } else if (id == R.id.nav_team_ecell) {
@@ -193,7 +237,7 @@ public class DashboardActivity extends AppCompatActivity
             i.setData(Uri.parse(url));
             startActivity(i);
         } else if (id == R.id.nav_team_sc) {
-            String url = "http://juscofficial.wixsite.com/home";
+            String url = "http://www.thejusc.tk";
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
@@ -208,6 +252,12 @@ public class DashboardActivity extends AppCompatActivity
 
         if (fragment != null) {
 
+
+            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+            if (user1 == null) {
+                startActivity(new Intent(this, LogInActivity.class));
+                finish();
+            }
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.frame_container, fragment).commit();
@@ -264,7 +314,7 @@ public class DashboardActivity extends AppCompatActivity
                         "3. Damaging the arena may cause direct disqualification.<br></p>" +
                         "<br><p><b>Point System:</b><br>" +
                         "This will be introduced at the time of event.<br></p>"));
-        events.add(new Event("Robotech", "Pac-Man", "The most A-maze-ing bot chase as you dodge invisible obstacles, decode messages that can't be seen and hurry across the map to eat good food and destroy that poison.", R.drawable.pacbot, R.drawable.p, "" +
+        events.add(new Event("Robotech", "Pac-Bot", "The most A-maze-ing bot chase as you dodge invisible obstacles, decode messages that can't be seen and hurry across the map to eat good food and destroy that poison.", R.drawable.pacbot, R.drawable.p, "" +
                 "<h1>Autonomously collect food items in a grid and go to the finish line.</h1><br>" +
 //                                "<br>An autonomous robot which while following a straight line in a grid should also be able to decode IR messages.<br>" +
                 "<p><b>Arena Description: -</b><br> The arena will consist of:<br>" +
@@ -364,7 +414,7 @@ public class DashboardActivity extends AppCompatActivity
                         "extra bonus points. Also, there will be such obstacles/areas,<br>" +
                         "touching/entering those will cause the deduction in points.<br></p>" +
                         "Point System: This will be introduced at the time of event."));
-        events.add(new Event("Robotech", "Snakes and Ladders", "This Srijan come play snakes and ladders with your bots. \nA classic game reinvented have fun gathering points and evading poison.", R.drawable.snakesandladder, R.drawable.s,
+        events.add(new Event("Robotech", "Snakes and Ladders", "This Srijan come play snakes and ladders with your bots. \nIn this classic game reinvented, have fun gathering points and evading poison.", R.drawable.snakesandladder, R.drawable.s,
                 "<h2>Design a manually controlled robot to move and pick/grab the things.</h2><br>" +
                         "<p><b>Robot specification:</b><br>" +
                         "1. Dimension 25×20×20 (cm) with 10% tolerance.<br>" +
@@ -392,7 +442,7 @@ public class DashboardActivity extends AppCompatActivity
                         "Moreover who reaches first to the end will get '50' game points second 40 and third 30.<br>" +
                         "8. At last the player having largest sum of his/her (game point+ ring credit point) will win the game.<br>" +
                         "9. To collect more no of rings one can leave the advantage of ladder or can take the ladder to reach faster to the end to grab highest game points. It’s up to the player's decision.</p>"));
-        events.add(new Event("Robotech", "Destination Seeker 2.0", "\"I chose the path less travelled by, and that has made all the difference\".\nWelcome to the line following event of Srijan.", R.drawable.lineimage, R.drawable.d,
+        events.add(new Event("Robotech", "Destination Seeker 2-0", "\"I chose the path less travelled by, and that has made all the difference\".\nWelcome to the line following event of Srijan.", R.drawable.lineimage, R.drawable.d,
                 "<h2>Design a autonomous robot to follow the track as closely as possible</h2><br>" +
                         "<p><b>Rules and Regulations & Arena description</b><br>" +
                         "• Bot has to be self-efficient and autonomous ,no external computation unit can be used <br>" +
@@ -439,7 +489,7 @@ public class DashboardActivity extends AppCompatActivity
                         "• Bot can’t leave behind any part of it after the run<br>" +
                         "• Bot has to work as a single integrated unit</p></p><br>" +
                         "Sample Arena - https://www.facebook.com/events/996011600500545/permalink/996020700499635/"));
-        events.add(new Event("Robotech", "Bandits of the Sea 2.0", "Ahoy, mates !! Buckle your swords and itch your beards. \nThe Bandits is back by popular demand. Sail those waters in the Bandits of the Sea 2.0!", R.drawable.banditsofthesea, R.drawable.b,
+        events.add(new Event("Robotech", "Bandits of the Sea 2-0", "Ahoy, mates !! Buckle your swords and itch your beards. \nThe Bandits is back by popular demand. Sail those waters in the Bandits of the Sea 2.0!", R.drawable.banditsofthesea, R.drawable.b,
                 "<h2>Design a manually controlled robot to traverse in surface of water.</h2><br>" +
                         "<p><b>Robot Specifications:</b><br>" +
                         "1. The dimension of robot is 40cmx40cm, with 10% tolerance.<br>" +
@@ -467,11 +517,10 @@ public class DashboardActivity extends AppCompatActivity
                         "</p></p>" +
                         "<p><b>Point System:</b><br> This will be introduced at the time of event.</p>"));
 
-        events.add(new Event("Gaming", "FIFA", "Get ready for non stop FIFA against your friends and stand a chance to win some amazing prizes.", R.drawable.fifaimage, R.drawable.f, "Event details will be decided on spot. For further details ask queries in the <b>Contact Us</b> section in the app."));
-        events.add(new Event("Gaming", "Counter Strike", "May the odds be ever in your favour. Play against your friends in a chance to win amazing prizes.", R.drawable.csimage, R.drawable.c, "Event details will be decided on spot. For further details ask queries in the <b>Contact Us</b> section in the app."));
-        events.add(new Event("Gaming", "NFS Most Wanted", "Race against time, on a highway to hell! Play one of the most loved racing games and win amazing prizes.", R.drawable.nfsimage, R.drawable.n, "Event details will be decided on spot. For further details ask queries in the <b>Contact Us</b> section in the app."));
-        events.add(new Event("Gaming", "Mini Militia", "Team up with your friends for an extreme combat challenge. This addictive game has won the heart of millions. ", R.drawable.minimilitiaimage, R.drawable.m, "Event details will be decided on spot. For further details ask queries in the <b>Contact Us</b> section in the app."));
-
+        events.add(new Event("Gaming", "FIFA", "Get ready for non stop FIFA against your friends and stand a chance to win some amazing prizes.", R.drawable.fifaimage, R.drawable.f, "Event details will be decided on spot. "));
+        events.add(new Event("Gaming", "Counter Strike", "May the odds be ever in your favour. Play against your friends in a chance to win amazing prizes.", R.drawable.csimage, R.drawable.c, "Event details will be decided on spot. "));
+        events.add(new Event("Gaming", "NFS Most Wanted", "Race against time, on a highway to hell! Play one of the most loved racing games and win amazing prizes.", R.drawable.nfsimage, R.drawable.n, "Event details will be decided on spot. "));
+        events.add(new Event("Gaming", "Mini Militia", "Team up with your friends for an extreme combat challenge. This addictive game has won the heart of millions. ", R.drawable.minimilitiaimage, R.drawable.m, "Event details will be decided on spot. "));
         events.add(new Event("Code Me", "Sher-Locked", "Sher-Locked', an event that is a perfect infusion of brainstorming and exploring out of the box.", R.drawable.coding1, R.drawable.s,
                 "<h2>The fastest one to crack the code wins!</h2>" +
                         "Mr. Drumpf has been brutally murdered and the onus is on Detective Mobama(you) to find out who the real killer is. Suspicion is on Mr. Drumpf's five friends, one of whom is the killer. All we could gather as evidence was Mr. Drumpf's personal laptop which may contain information about who the killer is.<br>" +
@@ -511,7 +560,7 @@ public class DashboardActivity extends AppCompatActivity
                         "Rajat Kumar - 7278754372<br>" +
                         "Anik Dasgupta - 9163436746</p>"));
 
-        events.add(new Event("ManageMania", "B Model", "B-Model Competition is slightly different than the B-Plan competition. \nIn a B-Model competition you need to have not just an idea but also an prototype.", R.drawable.bplanimage, R.drawable.b,
+        events.add(new Event("ManageMania", "B Model", "B-Model Competition is slightly different than the B-Plan competition. \nIn a B-Model competition you need to have not just an idea but also a prototype.", R.drawable.bplanimage, R.drawable.b,
                 "<h2>B-Model Competition at Srijan’17 will consist of two rounds<h2><br>" +
                         "<p><b>Round 1 (Preliminary)</b><br>" +
                         "• Participants are required to email a soft copy of the Elevator Pitch of the Business Idea in not more than 6 slides and a short video in which a team member explains the business idea. Refer to the submission details for more information on content, format and deadline of the submission.<br>" +
@@ -576,7 +625,7 @@ public class DashboardActivity extends AppCompatActivity
                         "• The format and structure of events is subject to change before the actual beginning of the event.<br>" +
                         "• The top 2 teams qualifying for the cash prize will be identified by an independent jury. These teams may or may not overlap with the teams identified by Jadavpur University Entrepreneurship Cell for mentoring and incubation.<br>" +
                         "• The conditions for mentoring and incubation lies with the Entrepreneurship Cell of Jadavpur University and would be communicated to the teams selected for the same.</p>"));
-        events.add(new Event("ManageMania", "Epiphony", "Have you ever felt that you could sense the business acumen in you telling you how to run a succesful company. \nEver felt the need for that entrepreneurial spirit that lends itslef to success.", R.drawable.casechallenge, R.drawable.e,
+        events.add(new Event("ManageMania", "Epiphany", "Have you ever felt that you could sense the business acumen in you telling you how to run a successful company. \nEver felt the need for that entrepreneurial spirit that lends itslef to success.", R.drawable.casechallenge, R.drawable.e,
                 "<p><b>Participants:</b><br>" +
                         "10-12 teams, consisting of four students each.<br>" +
                         "<p><b>Pool System</b><br>" +
@@ -596,18 +645,23 @@ public class DashboardActivity extends AppCompatActivity
                         "A particularity is that, in order to win at in EPIPHANY, a team must actually deliver not one, but two solid presentations. They must convince the panel on both instances, or else they cannot rank favorably.<br>" +
                         "<p><b>Rankings:</b><br>" +
                         "Trophies for first, second and third place are awarded during closing ceremonies. Although all 12 teams may receive a ranking during deliberation, their order remains undisclosed. Only the top 3 are announced.</p>"));
-//        events.add(new Event("ManageMania", "Monopoly", getString(R.string.loremIpsum), R.drawable.monpoly, R.drawable.mlogo, getString(R.string.stairclimbingBotDesc)));
-
-        events.add(new Event("Mixed Bag", "Quiz It", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.q, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Mixed Bag", "Math-E-Magician", "You don't have to be a mathematician to have a feel for numbers", R.drawable.workshopimage, R.drawable.workshoplogo,
-                "<h2>Airlift your magic wand and be the jolly king</h2> <br>" +
-                        "<p>“You don't have to be a mathematician to have a feel for numbers</i>\"<br>" +
-                        "- John Nash<br></p>" +
+        events.add(new Event("Mixed Bag", "Quiz It", "Do you think you're a know-it-all ? \nDo you think that the other person doesn't know as much as you do ?", R.drawable.quizit, R.drawable.q, "" +
+                "<h2>\"<i>If you have knowledge, let others light their candles in it.</i>" +
+                "<br>- Margaret Fuller</h2><br><br>" +
+                "<p><b>Rules</b><br>" +
+                "1. General quiz, with a splash of tech, for college students under 25 years of age only.<br>" +
+                "2. Teams of max 3 members.<br>" +
+                "3. Cross-college teams are allowed, with valid ID cards.<br>" +
+                "4. Written prelims round.<br>" +
+                "5. 8 teams to qualify for the finals.<br></p>" +
+                "<p><i>The quizmaster's decision is final.</i></p>"));
+        events.add(new Event("Mixed Bag", "Math-E-Magician", "You don't have to be a mathematician to have a feel for numbers", R.drawable.math, R.drawable.m,
+                "<h2>\"<i>You don't have to be a mathematician to have a feel for numbers.</i>" +
+                        "<br>- John Nash</h2><br><br>" +
                         "<p>On its 11th edition, F.E.T.S.U. presents Srijan'17 brings you the opportunity to be the KHILADI of numbers. Come only if you see mathematics as a game and you like to play with numbers.<br>Airlift your ideas, swing your magic wand and compete with young minds.<br>" +
-                        "So guys, gear up!<br></p>" +
-                        "<p><b>Registration is free of cost.</b></p>"));
+                        "So guys, gear up!<br></p>"));
         events.add(new Event("Mixed Bag", "Junkyard Wars", "Junkyard Wars brings to you a wasteathon. The objective is simple.\n" +
-                "We human beings produce a lot of waste. Waste that might be recycled but isn’t.", R.drawable.workshopimage, R.drawable.workshoplogo,
+                "We human beings produce a lot of waste. Waste that might be recycled but isn’t.", R.drawable.junkyardwars, R.drawable.j,
                 "<h2>The mantra is three pronged.<br>" +
                         "Recycle-Reuse-Reproduce <br></h2>" +
                         "<p><b>• Recycle</b><br>" +
@@ -632,9 +686,26 @@ public class DashboardActivity extends AppCompatActivity
                         "Partho - 9883245361<br>" +
                         "Aranyo - 8961133064<br>" +
                         "Nandita - 7044732298<br></p>"));
-        events.add(new Event("Mixed Bag", "Electroniche", getString(R.string.loremIpsum), R.drawable.workshopimage, R.drawable.workshoplogo, getString(R.string.stairclimbingBotDesc)));
-        events.add(new Event("Mixed Bag", "Bridge The Gap", "Design creates culture.\nCulture shapes value.\nValue determines the future.", R.drawable.workshopimage, R.drawable.workshoplogo,
-                "<p>Bridge the Gap is an on-spot event. It has only one round. Some instructions that should be followed during the making of the model bridge-<br>" +
+        events.add(new Event("Mixed Bag", "Electroniche", "Are you fond of tinkering with gadgets? Do you enjoy building cool circuits with simple parts ?\n" +
+                "Electroniche gives you a chance to show off your skills on the breadboard. ", R.drawable.electroniche, R.drawable.e,
+                "<h2>\"<i>There's a way to do it better - find it.</i>" +
+                        "<br>- Thomas Edison</h2><br>" +
+                        "<p><b>Round 1:</b><br>" +
+                        "1. Each team will be given 30 multiple questions which they need to solve within a time limit of 1 hr.<br>" +
+                        "2. Top 8 teams based on their score in this round will qualify for the next round.<br></p>" +
+                        "<p><b>Round 2:</b><br>" +
+                        "1. Each team will be given a circuit idea.<br>" +
+                        "2. They have to build the circuit within a time limit of 2.5 hours.<br>" +
+                        "3. Circuit elements will be provided for this purpose.<br>" +
+                        "4. Scoring will be based on time taken to finish and harwdare cost.<br>" +
+                        "In Round 2, they will be given a problem statement that will be available only on the day of the event. Several common electronic components and IC's will be given and teams will be tasked on building electronic circuits using those electronic components properly.<br></p>" +
+                        "<p><b>General Rules:<br></b>" +
+                        "1. Team should consist maximum 3 members.<br>" +
+                        "2. Teams can be formed with cross college members.<br>" +
+                        "3. The decision of the event coordinators are final and binding.<br>" +
+                        "4. Intentional damage or displacement of the circuit elements may lead to disqualification.</p>"));
+        events.add(new Event("Mixed Bag", "Bridge The Gap", "Design creates culture.\nCulture shapes value.\nValue determines the future.", R.drawable.bridge, R.drawable.b,
+                "<p><b>Bridge the Gap</b> is an on-spot event. It has only one round. Some instructions that should be followed during the making of the model bridge-<br>" +
                         "1. Minimum free span (Distance between two piers) should be not more than 40 inches.<br>" +
                         "2. The deck width may vary between a minimum of 6 inches to a maximum of 9 inches.<br>" +
                         "3. Height of Bridge should not exceed 12 inches.<br>" +
@@ -650,7 +721,7 @@ public class DashboardActivity extends AppCompatActivity
                         "2. Participants have to bring adhesive gum and any type of cutting tool they prefer.<br>" +
                         "3. No extra materials will be given.<br>" +
                         "4. Decision made by the judges will be final and binding.</p>"));
-        events.add(new Event("Mixed Bag", "Paint and Wear", "“The public is more familiar with bad design than good design. It is, in effect, conditioned to prefer bad design, because that is what it lives with. The new becomes threatening, the old reassuring.”", R.drawable.workshopimage, R.drawable.p, "" +
+        events.add(new Event("Mixed Bag", "Paint and Wear", "“The public is more familiar with bad design than good design. It is, in effect, conditioned to prefer bad design, because that is what it lives with. The new becomes threatening, the old reassuring.”", R.drawable.paintandwear, R.drawable.p, "" +
                 "<p><b>Event Specifications:</b> <br>" +
                 "The event comprises of two rounds.<br>" +
                 "First will be on designing the logo of the company on paper.<br>" +
@@ -679,8 +750,33 @@ public class DashboardActivity extends AppCompatActivity
                 "7. Scales, no other colours apart from the above mentioned and sketch pens are not allowed.<br>" +
                 "8. If found disregarding the rules, the team will be disqualified.<br></p>" +
                 "<p><b>Point Systems:</b><br>" +
-                "This will be disclosed before the event.<br>"
-        ));
+                "This will be disclosed before the event.<br>"));
+        events.add(new Event("Mixed Bag", "Mini CNC Machine", "This event aims to do justice to the engineering adage of learn and improvise on already existing technologies for use in novel applications.", R.drawable.minicncplotter, R.drawable.m, "" +
+                "<p>The objective is to build a <b>CNC plotter</b> which can reproduce sufficiently simple sketches with reasonable accuracy. Since this is a pretty involved project, we aim to conduct a demonstration session wherein participants will be demonstrated on how to build a Mini CNC plotter, by utilising nothing more than discarded DVD drives, Arduino Uno, L293D H-Bridges and Servo motor. Do note that you are free to use any micro-controller board, however for the purpose of demonstration, we will be using Arduino Uno. You will have to construct such a CNC Plotter, and come up with improvements for the same, if possible. The models will be judged on their ability to plot a given sketch accurately.<br>" +
+                "</p><p><b>Materials Required: <br>" +
+                "2 DVD drives<br>" +
+                "Arduino Uno (+USB cable)<br>" +
+                "Breadboard<br>" +
+                "2x L293D ICs Motor driver <br>" +
+                "Mini Servo motor<br>" +
+                "Plexiglass (30 cm * 30 cm)<br>" +
+                "Pen/Marker<br>" +
+                "Laptop<br></p>" +
+                "<p><b>Scoring:</b><br>" +
+                "The competition involves using a CNC plotter to accurately plot a given sketch. Points will be awarded on how close the plotted image comes to the given sketch. <br>" +
+                "70%: Image reproducibility<br>" +
+                "30%: Plotting Speed</p><br>" +
+                "<p><b>Rules:</b><br>" +
+                "The participants will be organised in teams of 4-6. <br>" +
+                "The plotting area should be at least 4cm x 4cm. <br>" +
+                "Participants will have to bring all the materials listed in the above section for attending the demonstration session. <br>" +
+                "The decision made by the judges will be final and binding.<br></p>" +
+                "<p><b>Resources:</b> <br>" +
+                "Should you wish to stay ahead of the curve, and try your hands at making the CNC plotter yourself prior to the demo session, you can refer to the guide here.<br>" +
+                "This will also ensure you have additional insights into the sources of inaccuracy and points of improvement, helping you in your quest to be the best.<br>" +
+                "<b>Link:</b>http://www.ardumotive.com/new-cnc-plotter.html"));
+
+
     }
 
     public static class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {

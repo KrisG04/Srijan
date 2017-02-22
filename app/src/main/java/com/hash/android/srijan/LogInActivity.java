@@ -128,6 +128,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                         authUser.setId(user.getUid());
                         authUser.setUniversity(collegeValue);
                         authUser.setPhoneNumber(phoneValue);
+                        authUser.setPhotoURL(user.getPhotoUrl().toString());
                         try {
                             authUser.saveUser();
                         } catch (Exception e) {
