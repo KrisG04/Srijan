@@ -30,15 +30,15 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.ArrayList;
 
 import static com.hash.android.srijan.DashboardActivity.PREFS_NAME;
-import static com.hash.android.srijan.DashboardActivity.authUser;
 import static com.hash.android.srijan.fragment.SubscriptionFragment.arrayList;
-import static com.hash.android.srijan.fragment.SubscriptionFragment.mAdapter;
+
 
 public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+    private static final int RC_SIGN_IN = 0;
+    private static final String TAG = "LogInActivity";
     public static FirebaseUser user;
     public static GoogleApiClient mGoogleApiClient;
-    private static int RC_SIGN_IN = 0;
-    private static String TAG = "LogInActivity";
+    public User authUser;
     EditText name, college, phone;
     String nameValue, collegeValue, phoneValue;
     private FirebaseAuth mAuth;
@@ -50,40 +50,45 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_in_activity);
 
+        //Create a progress dialog to show the signing in pd
         pd = new ProgressDialog(LogInActivity.this);
         pd.setMessage("Signing you in...");
+
 
         name = (EditText) findViewById(R.id.editText2);
         college = (EditText) findViewById(R.id.editText4);
         phone = (EditText) findViewById(R.id.editTextPhone);
 
 
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance(); // Get the present user instance.
 //
 
 
-
         arrayList = new ArrayList<>();
-        mAdapter = new SubscribedEventRecyclerAdapter();
+
+        //Build the Google Sign in Options object and ask for the email address and the profile information.
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .requestProfile()
                 .build();
 
+        //Create a google sing in client using the previously created Google Sign In Options object
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
 
-        mGoogleApiClient.connect();
-        ImageView googleSignInButton = (ImageView) findViewById(R.id.googleSignInImageView);
-        googleSignInButton.setOnClickListener(this);
+        mGoogleApiClient.connect(); //Connect to the server
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        ImageView googleSignInButton = (ImageView) findViewById(R.id.googleSignInImageView); //Find the button
+        googleSignInButton.setOnClickListener(this);
+        //Set a onClick Listener
+        mAuthListener = new FirebaseAuth.AuthStateListener() { //Checks for any change in auth
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser(); //Fetch the current user
+                //If non empty user object is returned
                 if (user != null) {
 
                     SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -118,10 +123,13 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
 
 //                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+
                     nameValue = settings.getString("nameUser" + user.getUid(), null);
                     collegeValue = settings.getString("collegeUser" + user.getUid(), null);
                     phoneValue = settings.getString("phoneUser" + user.getUid(), null);
                     if (nameValue != null) {
+                        //Create a new User Object
                         authUser = new User();
                         authUser.setName(nameValue);
                         authUser.setEmail(user.getEmail());
@@ -130,17 +138,20 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                         authUser.setPhoneNumber(phoneValue);
                         authUser.setPhotoURL(user.getPhotoUrl().toString());
                         try {
-                            authUser.saveUser();
+                            authUser.saveUser(); //Save the user details to the database
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                         // User is signed in
-                        Log.d("onAuthStateChanged:", "signed_in:" + user.getUid());
+                        Log.d("onAuthStateChanged:", "signed_in:" + user.getUid()); //Log to the terminal that the object is saved sucessfully
                         Log.d("email", user.getEmail());
                         Log.d("name", user.getDisplayName());
-                        finish();
-                        startActivity(new Intent(LogInActivity.this, DashboardActivity.class));
+                        finish(); //Finish the activity so that the user cannot return to it after opening.
+                        Intent i = new Intent(LogInActivity.this, DashboardActivity.class);
+                        i.putExtra("authUser", authUser);
+                        startActivity(i);
+                        LogInActivity.this.overridePendingTransition(0, 0); //Override the animation to get rid of the glitch effect
                     } else {
                         Toast.makeText(LogInActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
                     }
@@ -210,21 +221,19 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     //
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "Connection failed");
+        Log.d(TAG, "Connection failed"); //Simply logs if the connection is a failure
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.googleSignInImageView:
-
-                signIn();
+                signIn(); //This basically signs you in
                 break;
 //            case R.id.facebookLogInImageView:
 //                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
 //                break;
             default:
-                break;
 
         }
 
@@ -234,10 +243,13 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
+        if (mAuthListener != null)
             mAuth.removeAuthStateListener(mAuthListener);
-            mGoogleApiClient.disconnect();
-        }
+
+        mGoogleApiClient.disconnect();
+        if (pd.isShowing())
+            pd.dismiss(); //To prevent view leaking
+
 
     }
 
@@ -263,9 +275,9 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
 
-            if (result.isSuccess()) {
+            if (result.isSuccess()) { //if sign in is sucessful
                 GoogleSignInAccount account = result.getSignInAccount();
-                firebaseAuthWithGoogle(account);
+                firebaseAuthWithGoogle(account); //Authenticate with firebase and complete firebase auth.
             } else
                 Log.d("Sign in:", "Failed");
         }
@@ -284,20 +296,20 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                         } else
                             Log.d("Task", "Failed");
                         pd.hide();
+                        pd.dismiss();
                     }
                 });
     }
 
     private void signIn() {
 
-
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient); //Creates the dialog for the user to sign in
+        startActivityForResult(signInIntent, RC_SIGN_IN); //Starts the sign in activity and waits for result
 
     }
 
 
+    //Code for handling Facebook sign in
 //    private void handleFacebookAccessToken(AccessToken token) {
 //        Log.d(TAG, "handleFacebookAccessToken:" + token);
 //

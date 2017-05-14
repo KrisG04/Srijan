@@ -8,9 +8,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hash.android.srijan.Event;
 import com.hash.android.srijan.R;
 
-import static com.hash.android.srijan.DashboardActivity.finalEvent;
+import java.util.ArrayList;
 
 
 /**
@@ -19,6 +20,11 @@ import static com.hash.android.srijan.DashboardActivity.finalEvent;
 public class EventsRecyclerAdapter extends RecyclerView.Adapter<EventsRecyclerAdapter.ViewHolder> {
 
     private int lastPosition = -1;
+    private ArrayList<Event> finalEvent = new ArrayList<>();
+
+    public EventsRecyclerAdapter(ArrayList<Event> finalEvent) {
+        this.finalEvent = finalEvent;
+    }
 
     /**
      * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent

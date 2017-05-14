@@ -3,8 +3,8 @@ package com.hash.android.srijan.fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,8 +84,9 @@ public class SponsorsFragment extends android.support.v4.app.Fragment {
         }
         RecyclerView sponsorsRecyclerView = (RecyclerView) rootView.findViewById(R.id.sponsorsRecyclerView);
 
-        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        mLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+//        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+//        mLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setItemPrefetchEnabled(false);
         sponsorsRecyclerView.setHasFixedSize(true);
         sponsorsRecyclerView.setItemAnimator(new SlideInUpAnimator());

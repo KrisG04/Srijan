@@ -32,25 +32,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.ArrayList;
+
 import static com.hash.android.srijan.DashboardActivity.PREFS_NAME;
-import static com.hash.android.srijan.DashboardActivity.authUser;
-import static com.hash.android.srijan.DashboardActivity.finalEvent;
-import static com.hash.android.srijan.EventsActivity.posEvent;
 import static com.hash.android.srijan.fragment.SubscriptionFragment.arrayList;
 import static com.hash.android.srijan.fragment.SubscriptionFragment.mAdapter;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    private static final String TAG = DetailsActivity.class.getSimpleName();
     Context context;
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    private FirebaseAuth firebaseAuth;
     private DatabaseReference mDatabase;
-
+    private int posEvent;
+    private ArrayList<Event> finalEvent;
     private SharedPreferences settings;
 
     private FloatingActionButton fab;
 
+    private User authUser;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -77,6 +78,11 @@ public class DetailsActivity extends AppCompatActivity {
 //        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fa);
         setContentView(R.layout.activity_details);
 
+        Bundle bundle = getIntent().getExtras();
+        authUser = bundle.getParcelable("authUser");
+        finalEvent = bundle.getParcelableArrayList("finalEvent");
+        posEvent = bundle.getInt("posEvent");
+
 //        getSharedPreferences("MyPrefsFileNew",0).getString("posEvent")
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,6 +90,10 @@ public class DetailsActivity extends AppCompatActivity {
         ImageView imageView = (ImageView) findViewById(R.id.image);
         imageView.setImageResource(finalEvent.get(posEvent).getImage());
 //        getWindow().getSharedElementEnterTransition().
+//        collapsingToolbarLayout.setTitle("");
+//        collapsingToolbarLayout.setTitleEnabled(false);
+//        TextView textView = (TextView) findViewById(R.id.textView);
+//        textView.setText(finalEvent.get(posEvent).getHead());
         collapsingToolbarLayout.setTitle(finalEvent.get(posEvent).getHead());
         collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
 
@@ -95,8 +105,6 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
 //detailsTextV
-
-        firebaseAuth = FirebaseAuth.getInstance();
 
 
         final ProgressDialog pd = new ProgressDialog(this);
@@ -164,6 +172,8 @@ public class DetailsActivity extends AppCompatActivity {
             }
 
         });
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
@@ -215,11 +225,13 @@ public class DetailsActivity extends AppCompatActivity {
                                     SharedPreferences.Editor editor = settings.edit();
                                     editor.putBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), true); //isRegistered is set to true
                                     editor.commit();
+//                                    if(mAdapter!= null)
+                                    mAdapter.notifyDataSetChanged();
                                     fab.setImageResource(R.drawable.ic_clear_black_24dp);
                                     FirebaseMessaging.getInstance().subscribeToTopic(finalEvent.get(posEvent).getHead().replaceAll("\\s+", ""));
                                     if (!arrayList.isEmpty()) {
                                         arrayList.remove(finalEvent.get(posEvent));
-                                        mAdapter.notifyDataSetChanged();
+//                                        mAdapter.notifyDataSetChanged();
                                     }
                                     pd.hide();
                                     Snackbar.make(findViewById(R.id.rootViewDetails), "Subscribed succesfully!", Snackbar.LENGTH_SHORT)
@@ -252,6 +264,10 @@ public class DetailsActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+            Log.d(TAG, "dataset updated");
         }
 
     }
@@ -298,10 +314,12 @@ public class DetailsActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putBoolean(finalEvent.get(posEvent).getHead() + authUser.getId(), false);
                         editor.commit();
+                        if (mAdapter != null)
+                            mAdapter.notifyDataSetChanged();
                         fab.setImageResource(R.drawable.ic_games_black_24dp);
                         if (!arrayList.isEmpty()) {
                             arrayList.remove(finalEvent.get(posEvent));
-                            mAdapter.notifyDataSetChanged();
+
                         }
                         pd1.hide();
                     } else {
@@ -320,10 +338,16 @@ public class DetailsActivity extends AppCompatActivity {
                         pd1.hide();
                     }
                     pd1.dismiss();
+                    mAdapter.notifyDataSetChanged();
                 }
             });
         } else {
             Toast.makeText(this, "Un-authenticated. Sign in again!", Toast.LENGTH_SHORT).show();
+        }
+
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+            Log.d(TAG, "Dataset updated");
         }
     }
 

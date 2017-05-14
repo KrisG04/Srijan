@@ -1,5 +1,7 @@
 package com.hash.android.srijan;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -13,13 +15,48 @@ import com.google.firebase.database.FirebaseDatabase;
  * Created by Spandita Ghosh on 1/31/2017.
  */
 
-public class User {
+public class User implements Parcelable {
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
     private String id;
     private String name;
     private String phoneNumber;
     private String email;
     private String university;
     private String photoURL;
+
+    public User() {
+    }
+
+    protected User(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        phoneNumber = in.readString();
+        email = in.readString();
+        university = in.readString();
+        photoURL = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+        parcel.writeString(this.id);
+        parcel.writeString(this.name);
+        parcel.writeString(this.phoneNumber);
+        parcel.writeString(this.email);
+        parcel.writeString(this.university);
+        parcel.writeString(this.photoURL);
+
+    }
 
     public String getUniversity() {
         return university;
@@ -86,4 +123,10 @@ public class User {
     public void setPhotoURL(String photoURL) {
         this.photoURL = photoURL;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
 }

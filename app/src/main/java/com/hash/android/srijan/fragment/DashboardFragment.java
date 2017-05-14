@@ -5,23 +5,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hash.android.srijan.DashboardActivity;
-import com.hash.android.srijan.EventRecyclerAdapter;
 import com.hash.android.srijan.EventsActivity;
 import com.hash.android.srijan.R;
+import com.hash.android.srijan.adapter.DashboardRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
-import static com.hash.android.srijan.DashboardActivity.eventArrayListIcon;
-import static com.hash.android.srijan.DashboardActivity.eventArrayListImage;
-import static com.hash.android.srijan.DashboardActivity.eventArrayListTextContent;
-import static com.hash.android.srijan.DashboardActivity.eventArrayListTextHeading;
-import static com.hash.android.srijan.DashboardActivity.pos;
 
 
 public class DashboardFragment extends android.support.v4.app.Fragment {
@@ -29,7 +24,10 @@ public class DashboardFragment extends android.support.v4.app.Fragment {
 //    static ArrayList<Integer> eventArrayListImage;
 
 
-
+    public ArrayList<Integer> eventArrayListImage;
+    public ArrayList<String> eventArrayListTextContent;
+    public ArrayList<String> eventArrayListTextHeading;
+    public ArrayList<Integer> eventArrayListIcon;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -38,7 +36,8 @@ public class DashboardFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle("Explore");
+        getActivity().setTitle("Srijan '17");
+        getActivity().getWindow().setExitTransition(new Explode());
 
     }
 
@@ -70,15 +69,27 @@ public class DashboardFragment extends android.support.v4.app.Fragment {
         RecyclerView eventsRecyclerView = (RecyclerView) rootView.findViewById(R.id.exploreRecyclerView);
         eventsRecyclerView.setHasFixedSize(true);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        eventsRecyclerView.setAdapter(new EventRecyclerAdapter());
+        eventsRecyclerView.setAdapter(new DashboardRecyclerAdapter(eventArrayListTextHeading, eventArrayListIcon, eventArrayListTextContent, eventArrayListImage));
 
         eventsRecyclerView.addOnItemTouchListener(new DashboardActivity.RecyclerItemClickListener(getActivity(), eventsRecyclerView, new DashboardActivity.RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) throws ExecutionException, InterruptedException {
                 Intent i = new Intent(getActivity(), EventsActivity.class);
 //                i.putExtra("position", position);
-                pos = position;
+//                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view.findViewById(R.id.frame_layout), "main");
+
+                //create a bundle to send to the activity
+                Bundle bundle = getActivity().getIntent().getExtras();
+                bundle.putStringArrayList("eventArrayListTextHeading", eventArrayListTextHeading);
+                bundle.putIntegerArrayList("eventArrayListImage", eventArrayListImage);
+                bundle.putIntegerArrayList("eventArrayListIcon", eventArrayListIcon);
+                bundle.putStringArrayList("eventArrayListTextContent", eventArrayListTextContent);
+                bundle.putInt("pos", position);
+                i.putExtras(bundle);
                 startActivity(i);
+//                startActivity(i, optionsCompat.toBundle());
+//                setExitTransition(new Explode().setDuration(1000));
+
             }
 
             @Override

@@ -1,10 +1,24 @@
 package com.hash.android.srijan;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Spandita Ghosh on 2/7/2017.
  */
 
-public class Team {
+public class Team implements Parcelable {
+    public static final Creator<Team> CREATOR = new Creator<Team>() {
+        @Override
+        public Team createFromParcel(Parcel in) {
+            return new Team(in);
+        }
+
+        @Override
+        public Team[] newArray(int size) {
+            return new Team[size];
+        }
+    };
     private String name;
     private String shortDescription;
     private int ImageView;
@@ -18,6 +32,14 @@ public class Team {
         ImageView = imageView;
         this.icon = icon;
         this.longDescription = longDescription;
+    }
+
+    protected Team(Parcel in) {
+        name = in.readString();
+        shortDescription = in.readString();
+        ImageView = in.readInt();
+        icon = in.readInt();
+        longDescription = in.readString();
     }
 
     public String getLongDescription() {
@@ -59,5 +81,19 @@ public class Team {
 
     public void setIcon(int icon) {
         this.icon = icon;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(shortDescription);
+        parcel.writeInt(ImageView);
+        parcel.writeInt(icon);
+        parcel.writeString(longDescription);
     }
 }

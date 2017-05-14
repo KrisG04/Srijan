@@ -2,21 +2,24 @@ package com.hash.android.srijan;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,9 +37,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.hash.android.srijan.fragment.AboutUsFragment;
 import com.hash.android.srijan.fragment.ContactUsFragment;
-import com.hash.android.srijan.fragment.DashboardFragment;
+import com.hash.android.srijan.fragment.OrgainiserFragment;
 import com.hash.android.srijan.fragment.SponsorsFragment;
 import com.hash.android.srijan.fragment.SubscriptionFragment;
+import com.hash.android.srijan.fragment.TabsFragment;
 import com.hash.android.srijan.functions.CircleTransform;
 
 import java.util.ArrayList;
@@ -47,248 +51,30 @@ import static com.hash.android.srijan.LogInActivity.mGoogleApiClient;
 import static com.hash.android.srijan.fragment.SubscriptionFragment.arrayList;
 
 public class DashboardActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener, SearchView.OnQueryTextListener {
 
     public static final String PREFS_NAME = "MyPrefsFileNew";
-    public static ArrayList<Integer> eventArrayListImage;
-    public static ArrayList<String> eventArrayListTextContent;
-    public static ArrayList<String> eventArrayListTextHeading;
-    public static ArrayList<Integer> eventArrayListIcon;
+    public static final String URL_VAR_NAME = "final_url";
+    private static final String TAG = DashboardActivity.class.getSimpleName();
     public static int pos;
-    public static User authUser;
     public static ArrayList<Event> finalEvent;
     static String m_Text;
-    private static String urlProfileImg;
     private FirebaseAuth mAuth;
-    private View navHeader;
+    private android.support.v4.view.ViewPager viewPager;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
-        Log.d("initToken", "Token:" + FirebaseInstanceId.getInstance().getToken());
-        arrayList = new ArrayList<>();
-        FirebaseMessaging.getInstance().subscribeToTopic("User");
-
-        updateDetails();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        SharedPreferences settings1 = getSharedPreferences("MyPrefsFileNew", 0);
-        if (authUser == null && user != null) {
-            String nameValue = settings1.getString("nameUser" + user.getUid(), null);
-            String collegeValue = settings1.getString("collegeUser" + user.getUid(), null);
-            String phoneValue = settings1.getString("phoneUser" + user.getUid(), null);
-            if (nameValue != null) {
-                authUser = new User();
-                authUser.setName(nameValue);
-                authUser.setEmail(user.getEmail());
-                authUser.setId(user.getUid());
-                authUser.setUniversity(collegeValue);
-                authUser.setPhoneNumber(phoneValue);
-                try {
-                    authUser.saveUser();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    //TODO(1): Implement SQLite Datbase in the project
+    //TODO(2): Implement a online api from which this data can be requested.
+    //TODO(3): Implement Search View
+    //TODO(4):
+    public static void updateDetails() {
 
 
-            } else {
-                startActivity(new Intent(this, LogInActivity.class));
-            }
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (getIntent().getBooleanExtra("launchFromNotification", false)) {
 
-            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-            if (user1 == null) {
-                startActivity(new Intent(this, LogInActivity.class));
-                finish();
-            }
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, new SubscriptionFragment())
-                    .commit();
-        } else {
-
-            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-            if (user1 == null) {
-                startActivity(new Intent(this, LogInActivity.class));
-                finish();
-            }
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, new DashboardFragment())
-                    .commit();
-
-        }
-
-//        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-//        boolean dialogShown = settings.getBoolean("dialogShownFinal2", false);
-
-
-//        mAuth = FirebaseAuth.getInstance();
-//        FirebaseUser user = mAuth.getCurrentUser();
-
-        assert user != null;
-        urlProfileImg = String.valueOf(user.getPhotoUrl());
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
-        navHeader = navigationView.getHeaderView(0);
-        TextView txtName = (TextView) navHeader.findViewById(R.id.name);
-        TextView emailTextView = (TextView) navHeader.findViewById(R.id.website);
-        ImageView header = (ImageView) navHeader.findViewById(R.id.img_header_bg);
-        ImageView profileImage = (ImageView) navHeader.findViewById(R.id.img_profile);
-
-
-        txtName.setText(user.getDisplayName());
-        emailTextView.setText(user.getEmail());
-        header.setImageResource(R.drawable.cover);
-
-
-        Glide.with(this).load(urlProfileImg)
-                .crossFade()
-                .thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(profileImage);
-
-        finalEvent = new ArrayList<>();
-
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        Fragment fragment = null;
-        if (id == R.id.nav_explore) {
-            fragment = new DashboardFragment();
-        } else if (id == R.id.nav_registrations) {
-            fragment = new SubscriptionFragment();
-        } else if (id == R.id.nav_sponsors) {
-            fragment = new SponsorsFragment();
-        } else if (id == R.id.nav_log_out) {
-            if (mGoogleApiClient.isConnected()) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(@NonNull Status status) {
-                                // ...
-                                mAuth.signOut();
-                            }
-                        });
-            } else {
-                FirebaseAuth.getInstance().signOut();
-//                System.exit(0);
-                finish();
-            }
-            startActivity(new Intent(DashboardActivity.this, LogInActivity.class));
-        } else if (id == R.id.nav_team_ecell) {
-            String url = "https://www.facebook.com/juslecell";
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            startActivity(i);
-        } else if (id == R.id.nav_team_journal) {
-            String url = "http://www.jujournal.com";
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            startActivity(i);
-        } else if (id == R.id.nav_team_srijan) {
-            String url = "http://www.srijanju.in";
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            startActivity(i);
-        } else if (id == R.id.nav_team_sc) {
-            String url = "http://www.thejusc.tk";
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            startActivity(i);
-        } else if (id == R.id.nav_about_us) {
-            fragment = new AboutUsFragment();
-        } else if (id == R.id.nav_contact_us) {
-            fragment = new ContactUsFragment();
-        } else if (id == R.id.nav_navigation) {
-            navigateTo(22.560808, 88.413224);
-        }
-
-
-        if (fragment != null) {
-
-
-            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-            if (user1 == null) {
-                startActivity(new Intent(this, LogInActivity.class));
-                finish();
-            }
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, fragment).commit();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-
-        //22.560808, 88.413224
-    }
-
-    private void navigateTo(double lat, double lng) {
-
-        String format = "geo:0,0?q=" + lat + "," + lng + "(Jadavpur University SL Campus)";
-        Uri uri = Uri.parse(format);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
-
-    }
-
-    private void updateDetails() {
-
-//        Event event = new Event("Robotech","Stair Climbing Bot",getString(R.string.loremIpsum),R.drawable.codingimage,R.drawable.codemelogo);
-//        event.save();
 
         events = new ArrayList<>();
         events.clear();
+
+
         events.add(new Event("Robotech", "Step-Up", "A special event this year, Step Up asks you to step up your game and step up your bots. \nLet your bots step up on the way to victory.", R.drawable.stairimage, R.drawable.s,
                 "<h2>Design a manually controlled robot to climb stairs.</h2><br>" +
                         "<p><b>Robot Specifications:</b><br>" +
@@ -775,8 +561,291 @@ public class DashboardActivity extends AppCompatActivity
                 "Should you wish to stay ahead of the curve, and try your hands at making the CNC plotter yourself prior to the demo session, you can refer to the guide here.<br>" +
                 "This will also ensure you have additional insights into the sources of inaccuracy and points of improvement, helping you in your quest to be the best.<br>" +
                 "<b>Link:</b>http://www.ardumotive.com/new-cnc-plotter.html"));
+//
+//        database.getReference("Events-Desc").setValue(events);
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem menuItemCompat = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItemCompat);
+        searchView.setOnQueryTextListener(this);
+        return true;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+// set an exit transition
+//        getWindow().setExitTransition(new Explode());
+        setContentView(R.layout.activity_dashboard);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
+        Log.d("initToken", "Token:" + FirebaseInstanceId.getInstance().getToken());
+        arrayList = new ArrayList<>();
+        FirebaseMessaging.getInstance().subscribeToTopic("User");
+
+
+        Bundle bundle = getIntent().getExtras();
+        User authUser = bundle.getParcelable("authUser");
+        if (authUser == null) {
+            startActivity(new Intent(this, LogInActivity.class));
+            finish();
+        }
+        updateDetails();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+//        if (getIntent().getBooleanExtra("launchFromNotification", false)) {
+//
+//            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+//            if (user1 == null) {
+//                startActivity(new Intent(this, LogInActivity.class));
+//                finish();
+//            }
+//            fragmentManager.beginTransaction()
+//                    .replace(R.id.frame_container, new SubscriptionFragment())
+//                    .commit();
+//        } else {
+//
+//            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+//            if (user1 == null) {
+//                startActivity(new Intent(this, LogInActivity.class));
+//                finish();
+//            }
+        fragmentManager.beginTransaction()
+                .replace(R.id.frame_container, new TabsFragment())
+                .commit();
+
+//        }
+
+//        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+//        boolean dialogShown = settings.getBoolean("dialogShownFinal2", false);
+
+
+//        mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser user = mAuth.getCurrentUser();
+
+        assert user != null;
+        String urlProfileImg = String.valueOf(user.getPhotoUrl());
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+        View navHeader = navigationView.getHeaderView(0);
+        TextView txtName = (TextView) navHeader.findViewById(R.id.name);
+        TextView emailTextView = (TextView) navHeader.findViewById(R.id.website);
+        ImageView header = (ImageView) navHeader.findViewById(R.id.img_header_bg);
+        ImageView profileImage = (ImageView) navHeader.findViewById(R.id.img_profile);
+
+
+        txtName.setText(user.getDisplayName());
+        emailTextView.setText(user.getEmail());
+        header.setImageResource(R.drawable.cover);
+
+
+        Glide.with(this).load(urlProfileImg)
+                .crossFade()
+                .thumbnail(0.5f)
+                .bitmapTransform(new CircleTransform(this))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(profileImage);
+
+        finalEvent = new ArrayList<>();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        //noinspection SimplifiableIfStatement
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        Fragment fragment = null;
+        if (id == R.id.nav_explore) {
+            fragment = new TabsFragment();
+        } else if (id == R.id.nav_registrations) {
+            fragment = new SubscriptionFragment();
+        } else if (id == R.id.nav_sponsors) {
+            fragment = new SponsorsFragment();
+        } else if (id == R.id.nav_log_out) {
+            if (mGoogleApiClient.isConnected()) {
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                                // ...
+                                mAuth.signOut();
+                            }
+                        });
+            } else {
+                FirebaseAuth.getInstance().signOut();
+//                System.exit(0);
+                finish();
+            }
+            startActivity(new Intent(DashboardActivity.this, LogInActivity.class));
+        } else if (id == R.id.nav_team_ecell) {
+            String url = "https://www.facebook.com/juslecell";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        } else if (id == R.id.nav_team_journal) {
+            String url = "http://www.jujournal.com";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        } else if (id == R.id.nav_team_srijan) {
+            String url = "http://www.srijanju.in";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        } else if (id == R.id.nav_team_sc) {
+            ArrayList<String> url = new ArrayList<>();
+            url.add("http://www.srijanju.in");
+            url.add("http://www.thejusc.tk");
+//            Intent i = new Intent(Intent.ACTION_VIEW);
+//            i.setData(Uri.parse(url));
+//            startActivity(i);
+            Bundle b = new Bundle(1);
+            b.putStringArrayList(URL_VAR_NAME, url);
+            fragment = new OrgainiserFragment();
+            fragment.setArguments(b);
+        } else if (id == R.id.nav_about_us) {
+            fragment = new AboutUsFragment();
+        } else if (id == R.id.nav_contact_us) {
+            fragment = new ContactUsFragment();
+        } else if (id == R.id.nav_navigation) {
+            navigateTo(22.560808, 88.413224); //hardcoded coordinates of Jadavpur University SL Campus
+        }
+
+
+        if (fragment != null) {
+
+
+            FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+            if (user1 == null) {
+                startActivity(new Intent(this, LogInActivity.class));
+                finish();
+            }
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_container, fragment).commit();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+
+        //22.560808, 88.413224
+    }
+
+    private void navigateTo(double lat, double lng) {
+
+        String format = "geo:0,0?q=" + lat + "," + lng + "(Jadavpur University SL Campus)";
+        Uri uri = Uri.parse(format);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+
+    }
+
+    /**
+     * Called when a tab enters the selected state.
+     *
+     * @param tab The tab that was selected
+     */
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        viewPager.setCurrentItem(tab.getPosition());
+
+    }
+
+    /**
+     * Called when a tab exits the selected state.
+     *
+     * @param tab The tab that was unselected
+     */
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    /**
+     * Called when a tab that is already selected is chosen again by the user. Some applications
+     * may use this action to return to the top level of a category.
+     *
+     * @param tab The tab that was reselected.
+     */
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+    /**
+     * Called when the user submits the query. This could be due to a key press on the
+     * keyboard or due to pressing a submit button.
+     * The listener can override the standard behavior by returning true
+     * to indicate that it has handled the submit request. Otherwise return false to
+     * let the SearchView handle the submission by launching any associated intent.
+     *
+     * @param query the query text that is to be submitted
+     * @return true if the query has been handled by the listener, false to let the
+     * SearchView perform the default action.
+     */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    /**
+     * Called when the query text is changed by the user.
+     *
+     * @param newText the new content of the query text field.
+     * @return false if the SearchView should perform the default action of showing any
+     * suggestions if available, true if the action was handled by the listener.
+     */
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 
     public static class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
